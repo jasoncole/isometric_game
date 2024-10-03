@@ -1,0 +1,119 @@
+
+
+there's like 100+ spells in the game
+
+TRAITS, SKILLS, SPELLS, HEROIC ABILITIES, and TITLES:
+traits are specific to the individual or their race. traits can be developed but only by significant milestones in character development
+skills are gained by training them. Has levels.
+spells need to be learned (from spell scrolls or grimoires) and you can only have as many as your magic level allows. Each spell has a type that determines how it fuses with other spells. You can level up spells with skill points.
+heroic abilities are special powers granted to the hero, they are not limited like normal spells. Heroic abilities are kept across all saves
+titles are bestowed, or gained by completing feats. some titles can be removed if their conditions are no longer met
+
+UI:
+organized into passive and active abilities
+you can open a menu to choose which active abilities are available on the hot bar
+
+Example Traits:
+dragonskin
+fast reflexes
+super strength
+protector
+exceptional talent
+
+Example Skills:
+appraisal
+dimensional storage
+gardening
+growth
+thought acceleration
+mind's eye / imagination
+mana sensitivity
+
+
+Heroic Abilities:
+load/save
+pause/rewind/fastforward
+
+Example Titles:
+dragonslayer
+bane of dragons
+world's strongest swordsman
+world's strongest mage
+hero
+demon Lord
+saintess
+thief
+murderer
+
+ABILITY DESIGN RULES:
+1. Does one, specific thing; can be explained conceptually in one sentence
+2. simple execution; No more than 1 button, 1 press execution
+3. must be understandable independently, not dependent on other abilities
+
+FUSION
+
+get new spells by combining spells with each other like persona or shin megami tensei
+fusing specific spells can increase their power (?)
+
+problem: how does fusion work?
+needs to be predictable/systematic
+spells are divided into types based on the mechanics of the spell
+combing spells of specific types will create a spell of another type with a higher rarity
+
+spell types:
+- emission
+- aura
+- transmutation
+- curse
+- blessing
+- conjuring
+- spirit
+- holy
+- witchcraft
+- arcane
+
+Example Spells:
+spell copy (transmutation) (arcane)
+disguise (transmutation)
+stealth (transmutation) or (blessing)
+stasis (curse)
+za warudo (holy)
+blink (emission)
+teleport (emission)
+clairvoyance (emission)
+werewolf transformation (transmutation) (witchcraft)
+summon wolves (conjuring)
+tornado (spirit)
+monsoon (spirit)
+degen aura (aura) (curse)
+
+EVOLUTION
+
+specific skills will automatically combine and evolve to make more powerful skills once they are maxed
+traits can evolve at specific race or character development milestones
+some titles are used as prerequisites for larger titles
+
+WEAPONS
+each character can only use a specific weapon
+a character can only change weapons as dictated by scripted character sequences
+reasons:
+1. hard to make animations for each character and weapon type
+2. I don't want the player to be limited to a small portion of the available weapons
+3. it's confusing to have 2 classes of items: inventory items and wearable items
+
+unfortunately no weapon skills :(
+
+
+I would prefer if this game shipped on console but I will design with PC first in mind
+
+CONTROLS
+
+with controller,
+can issue simple commands to summoned units:
+follow - follow hero and copy their actions
+farm - target nearest creep
+fight - target nearest hero
+push - target nearest lane
+
+creeps use abilties automatically
+

@@ -1,0 +1,71 @@
+PLANNED REWRITES
+
+rewrite 1:
+- make pathfinding stop when it reaches depth limit
+- make pathfinding search from each endpoint simultaneously
+- dynamically create grid from evaluating the positions of colliders in the world
+-> allow certain objects to be positioned in gridspace (sv2)
+
+rewrite 2:
+- implement any angle pathfinding
+
+rewrite 3:
+- add circular colliders and calculate node connectivity based on collider intersection with grid square
+- make simple heuristic to walk the grid path created by anya search
+
+rewrite 4:
+- make better algorithm to find exact path if possible
+
+NOTES
+
+other algorithms:
+dota walltracing - finds a rough path using A* then runs a walltracer through the path to find an exact path. Not guaranteed to find the optimal path.
+
+https://www.youtube.com/watch?v=NmM4pv8uQwI&t=948s
+Jump point search - same as A* search but prunes nodes that can be reached by alternate paths
+
+https://www.youtube.com/watch?v=7MOQOvGJyn4
+Anya - any angle pathfinding. Uses line of sight checks to evaluate large sections of space at once. Once a region containing the goal is found, the exact angle within the region can be calculated
+Polyanya - Anya for navmeshes
+
+https://redblobgames.github.io/circular-obstacle-pathfinding/
+circular obstacle pathfinding - make a graph of straight lines and arc segments, then use A* to find the shortest path
+
+requirements:
+fast - many units should be able to pathfind simultaneously
+complete - should always find a path if one exists
+optimal - should find the best path
+accurate - simulates the actor and the environment as closely as possible
+
+option 1: navmesh with Polyanya
+(-) curves must be approximated with polygons
+(?) is rebuilding the navmesh expensive?
+(?) does introducing a new obstacle force me to rebuild the whole navmesh?
+(?) can i use the same navmesh with different sized actors?
+
+option 2: Anya to find path, then circular obstacle pathfinding to get exact path
+(?) is this guaranteed to always find best path?
+
+option 3: circular object pathfinding and use a heuristic to decide which tangents to calculate
+(-) may not find the best path
+(-) heuristic not good enough to solve worst case
+
+moving objects are not considered in pathfinding algorithm
+save list of objects that the path turns around
+when those objects move, recalculate path
+when an object stops, check if it intersects path then recalculate if it does
+
+for now just do basic A* search
+in the future I will improve pathfinding algorithm
+
+problem: if a point is unreachable, it will search every point on the map before it concludes that the point can't be reached
+need a way to detect closed paths
+
+solution: a point is unreachable if it is completely enclosed
+the only way to ensure that the point is enclode is by searching every connected node in the enclosed area
+fastest way to do this is to simultaneously search from start to end and end to start
+when both searches meet, connect the paths
+if either search runs out of nodes to find, then the point is unreachable
+
+all units are the same size
+hero can "push" their summons out of the way

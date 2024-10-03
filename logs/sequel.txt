@@ -1,0 +1,91 @@
+is there a way to have quantam AND rewind?
+at each point in time save the state of each thing
+most things are in an indeterminant state where they could be in a range of values
+when you have to decide on a state, poll all other states along the timeline, past and future
+prune unimportant states like far in the past
+important states all contribute to the current state
+STORY: (IGNORE STORY FOR NOW, FOCUS ON MECHANICS)
+
+real time conversations?
+NPCs need to be able to react instantly to actions taken by the player
+such as hurting an NPC
+the action should not be interrupted by a dialogue prompt, and I don't think I want the NPC to prompt the player
+then the problem is how do I show facial expressions?
+option 1: small popup window next to character with reaction face
+option 2: allow player to zoom in on characters, characters have stylized large faces
+
+3rd person shooter
+shoot dialogue options to say them
+
+should passage of time be handled in discrete intervals like persona?
+no better to make everything real time
+time moves very slowly for a game so you don't have to race the NPCs
+you can choose to wait/rewind a certain amount of time
+
+DIALOGUE
+everything is real time
+should text appear over the character's head?
+or in the center of the screen?
+
+when a character says certain responses, they will prompt a response from the player
+you can select/highlight the chracter then select a response from the popup menu
+
+text and prompts appear in real time and must be responded to in a timely manner
+you can pause/scrub time to replay conversations
+
+
+classic isekai 
+you are killed by truck 
+you wake up in a blank room with a goddess
+the goddess tasks you with defeating the demon lord in a fantasy world
+The only available heroic ability she can grant is save and reload
+She tells you that ability will be near useless for killing the demon lord
+When you get there you discover that there is already a hero
+You ask to join the hero's party but he doesn't trust you
+Goddess tells you to just wait it out until the hero kills the demon lord
+There's rumors in the kingdom that you're an imposter hero
+You have to leave the kingdom to avoid being killed
+what's the next goal?
+goddess asks her boss for help
+boss says that she lost contact with other powerful heroes
+boss gets in contact with hero
+hero confirms that there is a traitor amongst the heroes and he was tasked with investigating the disappearances
+hero says to work separately
+main antagonist powers - future sight?
+
+MYSTERIES:
+why is there another hero?
+- the hero is an imposter
+- the hero opposes the demons
+- the hero is aware that there are traitors within the other heroes
+
+why does the system exist?
+- the old gods made the system as a weapon against the demons
+- the system allows users to develop their skills much faster than normal and use magic
+- the old gods divided the universe into many different worlds and separated them from each other to stop the spread of the demons
+- most worlds in the universe are no longer in contact (assumed to have fallen to demons)
+- heroic abilities are just the powers of the long-dead old gods 
+
+what are the demons?
+- demons are just humans altered by magic
+
+what are the gods? what are their powers?
+- new gods are former heroes
+- the blank room is a bridge between worlds
+- you can't use the blank room to cross into another world
+- the new gods have heroic abilities
+
+why are there heroes and demon lords?
+- primary antagonist created heroes and demon lords to incite a war between humans and demons
+- in every world, when one side wins the world is plunged into darkness
+
+how are heroes chosen for specific worlds?
+- generally someone who accomplished great things but has a lot of regret is chosen to become a hero
+- the hero is given a heroic ability and must stop the demon lord
+
+why was the main character chosen from Earth?
+- the fact that you got save/load implies that the person with save/load has died
+- the killer of the save/load hero gave it to a random person from an unimportant world so it wouldn't fall into the hands of a powerful hero
+
+who is the antagonist?
+- nihilistic person who wants every world to be destroyed in a fight between humans and demons

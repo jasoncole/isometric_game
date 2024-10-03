@@ -1,0 +1,44 @@
+
+problem: world coordinate system
+I'm not using a tilemap
+I'm only putting objects on a static background
+coordinate system is just to keep track of where objects are in world space
+if i use isometric coordinate system, positions are rotated form the perspective of the player
+maybe i could use a vertical/horizontal grid (vertical spacing is twice as much)
+I decided to use isometric coordinates as originally planned and hopefully there's not many cases where I need to deal with the unintuitive coordinate system
+the reason is because i want to do pathfinding on isometric grid alignment
+
+problem: world space units
+units based on cell size
+1 unit is 1 side of 1 cell
+length of 1 cell is half the length of the smallest collider
+size of camera is however many colliders we want to fit on a screen
+
+problem: entity system
+each entity needs to track what modifiers it has
+an entity may potentially have hundreds of modifiers
+there can be lots of entities that each have a specific modifier
+or a specific modifier may only be attached to one entity
+i will try to allocate a variable amount of memory for each entity
+by default heroes will get a lot of memory for modifiers and creeps will get a little
+if needed, more memory will be allocated to entities that have a lot of modifiers via a general purpose allocator
+actually, for now let's just give each entity enough space for the maximum amount of modifiers
+hopefully each modifier takes up a relatively small amount of space
+
+problem: mouse on bitmap
+you have to check which bitmap the mouse is on when resolving the render buffer
+this is sort of ugly because only the render buffer is supposed to know where the entities get displayed on screen
+the actual game logic should deal with world position
+so now you have to pass the following information to the render buffer
+1. entity id attached to bitmap
+2. mouse position
+this also delays mouse action by 1 frame, but its unavoidable since otherwise, the displayed position of the mouse and the position when it performs the check don't match up
+i should also add hit bitmaps that show exactly where the bitmap is 
+
+problem: hero ability/modifier file organization
+per hero, I want to have
+one file for all the abilities
+and one file for all the modifiers
+modifier is just a struct that is marked as a modifier for the preprocessor
+use type introspection so functions that call modifier know what data is inside
+also use metapropgramming to auto include all the hero files
