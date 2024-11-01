@@ -1,0 +1,500 @@
+
+DO NOT ADD:
+Templar Assassin - psi blades turn auto attacks into skill shots, which don't really belong
+Meepo - clicking individual meepos is necessary to play correctly but controls don't support it
+Nyx - worst hero
+Pangolier - vector targeting, bouncing off terrain is dumb
+Marci - vector targeting, ult dumb
+Bristleback - too much button spam
+Shadow Demon - scales off opponents
+Snapfire - too much damage
+Crystal Maiden - arcane aura
+Mars - ult destroys projectiles mid-air
+snapfire/hoodwink - I don't think I want abilities that allow you to turn while channeling
+
+
+IDEAS:
+
+Ghost (Spectre)
+Spectral Dagger - launch a wide, slow-moving projectile. projectile damages, slows, and grants vision of enemies it passes through. Gain free pathing while on dagger's path.
+Shriek - emits a piercing scream that reduces enemy resistances. Twice as effective against lone enemies
+Spectral Form - Reduce 5/10/15/20% of all incoming damage. A portion of this damage is stored for 10 seconds and can be dealt back by ghost's attacks.
+*Haunt* - Create an illusion on target enemy hero.
+Torment - Appear at Haunt illusion closest to target point
+
+ghost Skill tree:
+Endless Torment - reduced Haunt cooldown
+Haunt/Shriek upgrade - Haunt illusion automatically casts shriek when it spawns
+
+Vampire (NightStalker)
+The Ritual (innate) - kills earned by Vampire at night make night last longer for the rest of the game
+Bat Swarm - damage and slow target enemy. Slow lasts longer at night.
+Shadowform - Vampire retreats into his shadow, becoming immune to damage. The shadow is not visible to enemies at night.
+Hunter in the night - Gain bonus attack speed and movement speed at night
+*Blood Suck* - grab and bite target enemy. Deals heavy damage and heals Vampire for the same amount.
+
+Fairy (Puck)
+Illusory Orb - launch damaging orb in target direction
+Tadah! - appear at location of orb
+Waning Rift - teleport a short distance forward, then damage and silence all nearby enemies
+Phase Shift - disappear momentarily
+*Dream Coil* - tether enemies near target point
+
+Fairy skilltree:
+waning rift increased range and radius
+
+
+Faceless Void
+Time Walk - leap to target location, gaining invulnerability during leap. Recent damage is reverted
+Time Dilation - gain bonus movespeed and attack speed. When the duration is over, lose movespeed and attack speed instead
+Bash - attach has a chance to stun and attack again
+*Chronosphere* - stun all units in circle except for Faceless Void.
+
+Faceless Void skilltree:
+time dilation buff doesn't tick down inside chronosphere
+
+Funny Bomb Man (Techies)
+Proximity Mines - place a mine that automatically detonates when an enemy is close enough
+Stasis trap - place a mine that automatically stuns enemies in range
+Remote Mines - place a mine that can be detonated remotely
+Last Laugh (innate) - All bombs detonate when Funny Bomb Man dies
+*Self Destruct* - After a delay, Funny Bomb man blows himself up, dealing massive damage. Last Laugh does not trigger if self destruct is successful
+
+Rubick
+telekinesis
+fade bolt - chaining magic bolt that reduces damage
+null field - activate to briefly create a null field around rubick that provides weak spell immunity to everything in the area
+*simulacrum* - copy last spell cast by target enemy hero (can have up to 2 at a time)
+
+Evil Rubick
+force push
+shade bolt - chaining magic bolt that steals damage
+existence field - activate to boost spell effectiveness in radius
+*spell steal* - take last spell cast from target opponent until you use it yourself
+
+Gunslinger
+Gun (Innate) - Has gun with 6 bullets giving gunslinger a ranged attack. Can be cast to reload.
+Roll - roll in target direction, briefly becoming untargetable, disjointing projectiles, and phasing through units
+Bullseye - Launch projectile attack in target direction, striking the first enemy hit. Range is based on attack range. Deals bonus damage based on missing health.
+Ace in the hole - passive. Gun deals more damage the less bullets are in the chamber. Getting a hero kill loads a bullet into the chamber and reduces cooldowns.
+*Bullet Time* - Can be activated to equip another gun for a short amount of time, reducing BAT and gaining the ability to attack without turning
+
+Earth Spirit
+Statue (Innate) - place a statue that interacts with other abilities
+Boulder Smash - AOE damage and silence in target direction. If hits a statue, that statue is sent in the direction and deals the silence and damage to any enemies it passes through
+Rolling Boulder - roll in target direction and slow first contacted enemy hero
+The Hand - stun and damage in small area. If the hand hits a statue, that statue will be sent towards earth spirit and stun and damage any enemies along the way
+Magnetize - enemies around earth spirit take DoT and are pulled towards statues and Earth Spirit
+
+Deep Sea Diver (Arc Warden)
+magic door - channel to teleport anywhere in range (like 2 screens)
+Magnetic field - slow and damage all enemies in bubble, and they miss when attacking enemies outside bubble
+spark wraith
+tempest double - summon an exact copy of your hero. The copy can copy itself if the original dies. Casting tempest double when two arc wardens already exist will automatically kill the other copy
+
+Ember Spirit
+searing chains - 2 targets
+sleight of fist - does not require turning
+flame guard - damage to barriers resets blink dagger cooldown
+fire remnant - teleports to remnant after animation, no travel time
+
+Drow Ranger
+frost arrows - can stack, slowing more and more. at max stacks freezes enemy, reducing their armor to zero until they take a physical damage threshold (if a singular attack exceeds the threshold, ony the damage until the threshold will pierce armor)
+gust
+piercing arrow - fires an arrow projectile that deals physical damage and deals bonus damage based on agility. Range is based on attack range
+marksmanship - grants agility to nearby allied ranged heroes if no enemy is within a short range of drow
+
+Lycanthrope
+summon wolves - level 3 wolves gain permanent invisibility, level 4 wolves gain cripple?
+hunt - activate to allow lycan and his summons to see footprints where enemy heroes were previously. nearby enemy heroes have reduced armor. (at game start, enemy heroes are given a modifier that leaves behind invisible footprints)
+feral impulse - lycan and his summons gain crit chance and lifesteal
+shapeshift - gains haste, increased night vision, and lunge on attack
+
+Morphling
+Waveform - gains extra range (agi) or damage (strength)
+Attribute Bonus - agi gives movespeed. strength gives magic resist
+Attribute Shift - shift between agi multiplier and strength multiplier (this way you can shift stats from items)
+Morph - keeps original attributes and passives are still active.
+
+Demonic Summoner (Warlock)
+10 summons total, 3 for each basic and one ultimate
+Summon combat units
+-imps (swarm)
+-skeleton archers (ranged)
+-grunts (melee)
+Summon aura units
+-bonus damage aura
+-damage resistance aura
+-drumbeater imp (speed aura)
+Summon spellcasting units
+-casts shadow word
+-casts fatal bonds
+-casts upheaval
+Summon DOOM - based on Mahoraga. Has passive - adapt. Deals more damage by hitting same target, Takes less damage by taking damage from same source
+
+Skywrath Mage
+arcane bolt
+concussive shot - no global range talent
+ancient seal
+Mystic Flare
+
+Skywrath Skilltree
+Arcane Bolt extra range
+
+Visage
+Birds (innate) - has stone form
+Soul assumption - When visage and his birds deal damage to enemy heroes, stacks are applied. Soul assumption can be cast to consume all stacks on all enemies, dealing damage and healing Visage.
+Charges - birds gain stacks of damage that are consumed on attack. 
+Gravekeeper's cloak - gain stacks of damaged resist that are removed by taking an instance of damage. Also grants damage resist aura to birds. Strength of aura decreases the farther away the birds are from Visage.
+*Silent Death* - Gain flying and invisibility for Visage and birds. Breaking invisibility allows visage and his birds to steal attack and movespeed on enemies they attack for a short duration.
+
+Visage Skilltree
+reduced stone form cooldown
++1 bird
+Increased soul assumption max damage
+
+Legion Commander - aesthetically she is a pampered duchess that is forced to be a military leader. NOT A #GIRLBOSS. rides a horse
+maybe horse has reduced turn rate or something?
+Charge - creates a temporary aura around legion that grants bonus armor and movespeed
+Last Stand - gain bonus health regen and attack speed. more effective at low health
+Moment of Courage - chance after being attacked that next attack is a double attack that also lifesteals
+*Duel!* - taunt target enemy hero. Winner gets permanent bonus damage
+
+Clinkz
+Death Pact - Consume creep to gain health and damage. Does not scale with creep health
+Strafing barrage - like the lucian spell
+Skeleton Walk - gain movespeed and invisibility
+*Searing Arrows* - passive. attacks apply a stacking debuff that reduces armor (not an autocast ability since it would be confusing how that works with strafing barrage)
+
+Clinkz Skilltree
+greatly increased death pact health/damage
+
+Huskar
+placeholder name (innate) - huskar gains increased regen amp at higher health, and decreased regen amp at lower health
+inner fire - knock enemies back and gain a magic barrier
+life break - huskar leaps to nearby enemy, dealing damage and allowing him to heal based on damage dealt.
+berserker's blood - gain attack speed and health regen at low health
+blaze of glory - huskar sets himself on fire, losing a percentage of his health per second but applying stacks of burning to enemies around him. His attacks also apply stacks of burning.
+
+Succubus (Queen of Pain)
+Sadist (innate) - heal for 20% of all damage dealt
+Poison Dagger - single target projectile. applies slow and damage. debuffed enemy takes bonus magic damage from attacks
+Blink
+Scream of Pain - deals damage after a delay instead of instantly. deals more damage
+*Fanservice* - launches a large area projectile than damages enemies and briefly fears them towards Succubus
+
+
+Naga Siren
+Mirror Image
+Net - attacks from naga or her illusions apply a stack. at max stacks enemy is rooted
+Riptide - cast to lower armor and deal damage around naga and all her illusions. each enemy can only be hit once
+*Song of the Siren* - sleep enemies around naga
+
+Naga Skilltree:
++1 mirror image
+increased song radius
+increased movespeed
+reduced mirror image cooldown
+
+
+Toad (Lion)
+earth spike - only ground target
+hex - silence, mute, slow to 100 ms
+to hell with you! - briefly banish target
+*Finger of Death*
+
+Bane
+nightmare
+brain sap
+close-minded - buff ally making them automatically retaliate when spell is cast on them, stunning caster
+fiend's grip
+
+
+Shadow Fiend
+Raze - ground target
+Prankster Imp - explodes after a delay, dealing damage and applying fear. Fear causes enemies to move towards sf
+Presence of the Dark Lord - decreases armor and magic resistance in an aura. The armor reduction increases the farther the victim is from SF. The magic reduction increases the closer the victim is to SF.
+Necromastery/Requiem - souls temporarily leave SF then return
+
+Fun Police (Antimage)
+mana break
+blink
+counterspell - briefly prevents single target spells, does not reflect
+Last Gasp / Snuffed Out - 2 abilities, casting one puts the other on cooldown. Secretly place a debuff on target enemy hero:
+Last Gasp - become silenced after casting a spell
+Snuffed Out - When you try to cast a spell, instead put it on cooldown for (x) seconds
+
+Vengeful Spirit
+Magic Missile
+Wave of Terror
+Vengeance Aura
+Nether Swap
+
+
+Viper
+Poison Attack
+Nethertoxin - silences
+Corrosive Skin
+Viper Strike
+
+Viper skilltree:
+corrosive skin is stronger in nethertoxin
+drastically reduced nethertoxin cooldown
+
+Tinker
+Laser
+Missiles
+Orbital strike - gives vision over target unit. after debuff expires, start another delay to launch laser at target's last known position. laser deals immense damage over time in target area
+Rearm - refreshes all ability/items
+
+Tinker skilltree:
+increased laser range
+
+
+Weaver
+Bugs
+Shukuchi
+geminate attack
+Time Lapse
+
+
+St. Clarence Augustus Rome (Omniknight)
+purification
+repel1 - buff omniknight and target ally, granting all damage shield and health regen (until shield destroyed)
+repel2 - give target ally and omniknight damage and curse resistance
+degen aura - reduces outgoing damage and slows for everyone close to omniknight
+Guardian Angel - buff nearby teammates with weak dispel and block 3/4/5 instances of damage
+
+
+Pudge
+Fresh Meat! (innate) - gain stacks when near kill. each stack grants +2 strength
+Meat hook - gains range with fresh meat stacks
+Rot - gains radius and damage with fresh meat stacks
+Flesh Heap - passive all damage block. scales with fresh meat stacks
+*Eat* - Pudge ingests target ally or enemy before spitting them back out. Pudge is slowed while eating. If its an enemy they take damage. Ingested target cannot take damage from outside sources (unfortunately anti-rot synergy)
+Dismember - channel stun and damage (I don't want player to accidently dismember first then press rot, cancelling dismember)
+
+
+Soul King
+Recruit (innate) - every kill gain a stack. Every 5 stacks gives +1 strength
+Soulfire Blast - throw a soul at an enemy (that would make this ability unusuable with rubick)
+Get to work - summon souls that automatically attack nearest enemy
+Sacrifice - lose up to (x) souls to gain that amount of strength
+Reincarnation - only castable while dead. consume souls to resurrect
+This design would probably be cool but unfortunately these abilities require the innate passive to make sense
+they wouldn't work for rubick
+
+Sven
+storm hammer
+great cleave
+supersonic - gain bonus movespeed and attack speed
+god's strength
+
+
+Juggernaut 
+blade fury - can attack during spin
+healing ward
+blade dance
+omnislash - slashes wide area cone in front of juggernaut. enemies take damage after a delay (this version is more thematic with samurai but it's probably not as good of an ability because it offers no defense)
+
+Wisp
+Tether (innate) - attach to ally. when you heal, they are healed by the same amount. sets wisp's movespeed equal to tether ally's movespeed
+Spirits - spirits move closer to wisp the faster wisp is moving
+Overcharge - activate to give attack speed to wisp and tether target
+Relocate - wisp and tethered ally teleport anywhere for a short time, then wisp and tethered ally teleport back.
+
+Furion
+sprout - summons a circle of trees and providing vision (not unit target)
+teleportation - teleport anywhere on the map
+nature's call - turn trees into treants that fight for you
+Wrath of Nature - bounces to all visible targets, each bounce increases damage up to a cap
+
+Troll Warlord
+swap stance (innate) - change between melee and ranged
+berserker's rage - passive. in melee form gain bash and bonus movespeed, in ranged form gain cripple
+whirling axes
+fervor
+battle trance - becomes unkillable and gains lifesteal (still controllable)
+
+
+Caster (Windrunner)
+magic bind - searches around the initial target instead of behind them
+Powershot - creates a magic circle to shoot the blast so if windrunner moves, the powershot will still go on the same path when it was cast. Has a perfect shot mechanic like nataruk that increases projectile speed and damage. Does not change damage/speed by passing through more enemies
+husk hop - cannot air strafe
+Spell barrage - automatically shoots the nearest enemy in range, prioritizing heroes
+
+
+Sniper
+shrapnel - provides vision instantly, slows and damages after a delay
+headshot - chance to deal bonus damage and ministun
+take aim
+*stalk* - go invisible. the next attack that breaks invisibility has reduced BAT, increased range, and guaranteed crit
+
+Storm Spirit - same
+
+
+Slark
+dark pact
+pounce - ground target
+essence shift - no permanent agi bonus
+shadow dance
+
+Slark skilltree:
+increased essence shift duration
+increased pounce distance/speed
+increased shadow dance duration
+
+
+Terrorblade
+demon zeal - grant bonus attack speed. if they are melee also grant bonus movespeed. if they are ranged grant bonus attack range instead
+conjure image
+metamorphosis - aura
+sunder - minimum health is 25% at all levels
+
+Terrorblade skilltree
+-50% sunder cooldown
++25% conjure image damage
++25% conjure image duration
++40% metamorphosis attack range
+
+Sand King
+burrowstrike
+sandstorm - sandstorm follows sand king
+epicenter - after channel burrows underground becoming immune and untargetable
+
+Oracle - standard BAT
+fortune's end - charges automatically and does not require channeling. can be recast to release immediately. does very little damage at low charge
+fate's edict - grant 100% magic resist but disarm and increase incoming physical damage
+purifying flames - deals damage then provides buff that grants healing over time
+false promise - applies strong dispel. delays heal/damage. healing is doubled
+
+Oracle skilltree:
+purifying flames deals increased damage to enemies
+increase fortune's end radius
+increased cast range for fortune's end / purifying flames
+
+Cancer Lancer
+spirit lance
+phantom rush - passive. copied by illusions. gain increased movespeed when moving towards enemies
+doppelganger
+juxtapose
+
+Broodmother
+spawn spiderlings - no spiderites
+summon weaver - spawns a stationary weaver that spreads webs around it. Webs increases the movespeed of broodmother and her summons while slowing enemies. no free pathing. weavers can spawn more weavers on a long cooldown. You cannot stack weavers on top of each other. weavers require attacks to be killed. 
+incapacitating bite - autocast. slows and reduces armor
+*dig burrow* - broodmother creates burrows that she can quickly travel between (the burrow tunnel sends her to another map that is a quarter the size of the real map, you can't see this map though)
+
+Underlord
+firestorm - doesn't deal max hp damage
+pit of malice
+atrophy aura - reduces enemy attack damage by a percentage and increases underlord's attack damage by the same amount. aura becomes more potent as underlord gets kills
+Dark Rift - choose a location to create a portal and create a portal around underlord. After a delay, all units in each portal are teleported to the other portal. both portals are visible to both teams
+
+Outworld Destroyer
+arcane orb - consumes a percentage of current mana and deals a percentage of current mana as pure damage
+astral imprisonment - transforms target into their astral form, applying silence, mute, slow, disarm, and making them untargetable.
+brain drain - dealing damage steals mana
+sanity's eclipse - Deals damage based on OD's max mana
+
+Chen
+penitence - apply slow, attackers gain attack speed
+holy persuasion
+test of faith - deals damage to enemy or heals ally. heal more effective for lower health. damage more effective for higher health
+hand of god - burst heal all allied heroes and fully heals units under chen's control
+
+enchantress - sexier design
+nature's attendants
+enchant - temporarily take control of a creep
+untouchable
+impetus - ult
+
+Phantom assassin
+Stifling dagger - instant attack. always deals full damage, cooldown and slow scale with levels
+phantom strike - gain evasion after teleporting
+silent killer - smoke yourself and gain attack speed. when breaking smoke gain double the attack speed bonus
+coup de grace - just a crit.
+
+Gyrocopter
+rocket barrage
+homing missile - can only be destroyed when it is first created on the ground. can't be destroyed once its in the air
+flak cannon - uses 1 attack record
+call down - first bomb slows, 2nd one does increased damage
+
+Lifestealer - old lifestaler
+
+Razor
+plasma field - still slows momentarily (maybe shorter tho)
+static link - steals damage from target enemy while razor is linked. razor is disarmed for the duration but automatically performs an instant attack every second.
+gathering storm - every time razor deals damage to an enemy, he steals some movespeed. periodically deals damage to all enemies around razor every time he moves a certain number of units
+eye of the storm
+
+Razor skilltree
+decreased eye of the storm strike interval
+decreased static link strike interval
+
+Pugna
+nether blast
+decrepify - applies ethereal, which does not stack with other sources of ethereal. slow and increase magic damage taken if enemy.
+nether sigil - slow moving flying unit with 100% magic resistance. provides magic resistance to allies
+life transfer - doesn't restore mana, can be cast on allies to trasnfer pugna's health to them
+
+Templar assassin
+refraction - each charge is used for damage dodge OR dealing damage, whichever happens first
+meld - bonus damage is added directly to the attack. the bonus damage is a buff that you retain briefly after breaking invisibility and is consumed on your next attack. Can be used with psi blades.
+psi blades - narrow skillshot like jinx, performs instant attack
+psionic trap
+
+Templar assassin skilltree
+reduced psi blade cooldown
+
+Kunkka
+torrent
+tidebringer - spell that launches a wave in a direction, dealing damage based on attack and briefly pushing back enemies
+x marks - strong dispellable?
+ghost ship - travels a set distance from kunkka
+
+Tidehunter
+gush - ground target like the aghanim's upgrade
+anchor smash - deals damage based on attack damage but does not count as an attack
+kraken shell - regenerating all-damage barrier that dispels when broken. if barrier is able to regenerate all the way, it strong dispels. if it only regenerates partially, it weak dispels
+ravage
+
+Tidehunter skilltree:
+bonus attack damage
+gush longer range
+gush larger projectile
+
+Ursa
+earthshock - small leap forward, ground target
+overpower
+fury swipes
+enrage - damage reduction, status resistance
+
+Pixie (Dark Willow)
+shadow realm - also applies slow
+bramble maze - brambles spawn randomly in an area
+cursed crown - provides vision and deals damage in radius after delay
+*pixie prank* - throws a projectile that explodes and fears enemies in random directions
+
+alternate Pixie (carry ver)
+Transposition - teleport a short distance away (doesn't require turning)
+bramble maze - brambles spawn randomly in an area
+Shadow Realm - become untargetable. gain flat magic damage on attack, does not break on attack.
+*harmony* - attacking reduces ability cooldowns. Casting abilities increases attack speed
+
+Doom
+devour - consume creep, gaining a digestion debuff that reduces movespeed. After digestion has finished, gain health and increased gold/experience. Digestion debuff is shorter than cooldown of ability
+scorched earth
+deep wounds - passive. attacks deal damage over time and reduce healing
+*DOOM* - place a universal curse on target enemy, silencing them and dealing damage over time.
+
+
+Magnus
+shockwave
+empower - gives nearby enemies a debuff that spreads damage taken to nearby allies
+skewer
+reverse polarity
+
+
+

@@ -1,0 +1,57 @@
+Heroes
+{
+	ghost
+	{
+		Ability0		spectral_dagger
+		Ability1		shriek
+		Ability2		dispersion
+		Ability3		haunt
+		Ability4		torment
+
+	}
+}
+
+Abilities
+{
+	ghost_spectral_dagger
+	{
+		Name					  "Spectral Dagger"
+		TargetType				TARGET_TYPE_UNIT
+		TargetTeam				TARGET_TEAM_ENEMY
+		TargetUnitType			UNIT_TYPE_BASIC
+		DamageType				DAMAGE_TYPE_MAGICAL
+		DispelType				DISPEL_TYPE_WEAK
+		ProjectileSpeed   		800.0
+		Damage					{70.0 120.0 170.0 220.0}
+		ManaCost				  {70.0 120.0 170.0 220.0}
+		MoveSpeedChangePct		{70.0 120.0 170.0 220.0}
+		Cooldown  				{70.0 120.0 170.0 220.0}
+	}
+
+	ghost_dispersion
+	{
+		Name					  "Dispersion"
+		Duration				  10.0
+		DamageReduction 		  {5.0 10.0 15.0 20.0}
+	}
+
+}
+
+Descriptions 
+{
+    ghost_spectral_dagger
+	"Launch a projectile at target enemy  dealing damage and slowing enemies it passes through. The projectile leaves 	behind a trail that grants the Ghost increased movement speed and free pathing."
+
+	ghost_shriek
+	"Emit a piercing scream that reduces enemy resistances. Twice as effective against lone enemies."
+
+    ghost_dispersion
+	"Reduce all incoming damage. A portion of the reduced damage briefly empowers the Ghost's attacks."
+
+    ghost_haunt
+	"Create an uncontrollable haunt illusion at target enemy hero. May be recast to take the illusion's place."
+
+    ghost_torment
+	"Appear at the haunt illusion."
+}
+

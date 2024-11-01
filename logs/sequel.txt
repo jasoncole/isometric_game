@@ -6,6 +6,9 @@ prune unimportant states like far in the past
 important states all contribute to the current state
 STORY: (IGNORE STORY FOR NOW, FOCUS ON MECHANICS)
 
+lighting is sampled from each texel multiplied by the probability that light could have bounced from that texel
+use wave functions similar to the way pathfinding works
+
 real time conversations?
 NPCs need to be able to react instantly to actions taken by the player
 such as hurting an NPC

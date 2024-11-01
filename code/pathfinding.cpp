@@ -2,7 +2,13 @@
 // TODO:
 // how often should the actor recalculate its path if it can't reach its destination?
 // use chunks to pathfind over large distances?
-// BUG: when objects are placed in the way of agent, agent will move inside the object and get stuck
+// consider Z
+
+// BUG : move to the left, hold move, then go up - player will keep moving left for some reason
+// the move target moves to the correct location so seems to be a problem with pathfinding
+// i think its a problem with moveentity. when there was an old path in the patharena, it was finishing that path before making a new one
+// should i just recalculate the path every frame?
+// whatever lets just switch to wave function pathfinding zzz
 
 struct path_node
 {

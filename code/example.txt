@@ -1,0 +1,17 @@
+Heroes
+{
+	HeroName
+	{
+		AbilitySlot		AbilityName
+	}
+}
+
+
+Abilities
+{
+	AbilityName
+	{
+		VariableName			Value
+		ListVariableName		{Value, Value, Value, Value}
+	}
+}

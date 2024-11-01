@@ -38,6 +38,9 @@
 #include <math.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <float.h>
+
+#define Real32Maximum FLT_MAX
 
 #define internal static 
 #define local_persist static 
@@ -86,8 +89,6 @@ typedef bool32 b32;
 typedef b32 b32x;
 typedef u32 u32x;
 
-
-
 #if RPG_SLOW
 #define Assert(Expression) if(!(Expression)) {*(int*)0 = 0;}
 #else
@@ -102,7 +103,6 @@ typedef u32 u32x;
 #define Gigabytes(Value) (Megabytes(Value)* 1024LL)
 #define Terabytes(Value) (Gigabytes(Value)* 1024LL)
 
-
 #define ArrayCount(Array) (sizeof(Array) / sizeof((Array)[0]))
 #define ABS(N) ((N)<0?-(N):(N))
 #define MIN(a,b) ((a)<(b)?(a):(b))
@@ -112,6 +112,9 @@ typedef u32 u32x;
 #define SetBit(A,k)     ( A[(k)/32] |= (1 << ((k)%32)) )
 #define ClearBit(A,k)   ( A[(k)/32] &= ~(1 << ((k)%32)) )
 #define TestBit(A,k)    ( A[(k)/32] & (1 << ((k)%32)) )
+
+#define Align16(Value) ((Value + 15) & ~15)
+#define OffsetOf(Struct, Member) (memory_index)&((Struct*)0)->Member
 
 #if 0
 // Doubly linked lists
@@ -150,7 +153,6 @@ CopyCharArray(u8* dest, u8* source, u32 bytes)
     }
 }
 
-
 struct sv2
 {
     union
@@ -169,54 +171,8 @@ struct sv2
         return this->V[index];
     }
     
-    sv2 operator-(sv2 Operand)
-    {
-        sv2 Result = {
-            this->x - Operand[0],
-            this->y - Operand[1]
-        };
-        return Result;
-    }
-    sv2 operator+(sv2 Operand)
-    {
-        sv2 Result = {
-            this->x + Operand[0],
-            this->y + Operand[1]
-        };
-        return Result;
-    }
-    
-    sv2& operator+=(sv2 right)
-    {
-        this->x += right.x;
-        this->y += right.y;
-        return *this;
-    }
-    
-    sv2& operator-=(sv2 right)
-    {
-        this->x -= right.x;
-        this->y -= right.y;
-        return *this;
-    }
-    
-    b32 operator!=(sv2 right)
-    {
-        b32 ret = this->x != right.x;
-        ret |= this->y != right.y;
-        return ret;
-    }
-    
-    b32 operator==(sv2 right)
-    {
-        b32 ret = this->x == right.x;
-        ret &= this->y == right.y;
-        return ret;
-    }
     
 };
-
-union fv3;
 
 union fv2
 {
@@ -233,55 +189,8 @@ union fv2
         return this->V[index];
     }
     
-    fv2 operator-(fv2 Operand)
-    {
-        fv2 Result = {
-            this->x - Operand[0],
-            this->y - Operand[1]
-        };
-        return Result;
-    }
-    fv2 operator+(fv2 Operand)
-    {
-        fv2 Result = {
-            this->x + Operand[0],
-            this->y + Operand[1]
-        };
-        return Result;
-    }
-    fv2 operator/(f32 Operand)
-    {
-        fv2 Result = {
-            this->x / Operand,
-            this->y / Operand
-        };
-        return Result;
-    }
-    
-    fv2& operator+=(fv2 right)
-    {
-        this->x += right.x;
-        this->y += right.y;
-        return *this;
-    }
-    
-    fv2& operator-=(fv2 right)
-    {
-        this->x -= right.x;
-        this->y -= right.y;
-        return *this;
-    }
-    
-    operator fv3();
     
 };
-
-// TODO: move this to math.h file?
-inline fv2 
-operator*(f32 scalar, fv2 vector)
-{
-    return {scalar*vector.x, scalar*vector.y};
-}
 
 union fv3
 {
@@ -290,86 +199,26 @@ union fv3
         f32 x, y, z;
     };
     
+    struct
+    {
+        fv2 xy;
+        f32 Ignored0_;
+    };
+    
+    struct
+    {
+        f32 Ignored1_;
+        fv2 yz;
+    };
+    
     f32 V[3];
     
     f32& operator[](int index)
     {
         return this->V[index];
     }
-    
-    fv3 operator-(fv3 Operand)
-    {
-        fv3 Result = {
-            this->x - Operand[0],
-            this->y - Operand[1],
-            this->z - Operand[2]
-        };
-        return Result;
-    }
-    
-    fv3 operator+(fv3 Operand)
-    {
-        fv3 Result = {
-            this->x + Operand[0],
-            this->y + Operand[1],
-            this->z + Operand[2]
-        };
-        return Result;
-    }
-    
-    fv3 operator/(f32 Operand)
-    {
-        fv3 Result = {
-            this->x / Operand,
-            this->y / Operand,
-            this->z / Operand
-        };
-        return Result;
-    }
-    
-    fv3& operator+=(fv3 right)
-    {
-        this->x += right.x;
-        this->y += right.y;
-        this->z += right.z;
-        return *this;
-    }
-    
-    fv3& operator-=(fv3 right)
-    {
-        this->x -= right.x;
-        this->y -= right.y;
-        this->z -= right.z;
-        return *this;
-    }
-    
-    fv3& operator*=(f32 right)
-    {
-        this->x *= right;
-        this->y *= right;
-        this->z *= right;
-        return *this;
-    }
-    
-    
-    operator fv2()
-    {
-        return {
-            this->x,
-            this->y
-        };
-    }
-    
 };
 
-fv2::operator fv3() 
-{
-    return {
-        this->x,
-        this->y,
-        0
-    };
-}
 
 
 union fv4
@@ -400,6 +249,20 @@ union fv4
         f32 a;
     };
     
+    struct
+    {
+        fv2 xy;
+        f32 Ignored0_;
+        f32 Ignored1_;
+    };
+    
+    struct
+    {
+        f32 Ignored2_;
+        fv2 yz;
+        f32 Ignored3_;
+    };
+    
     f32 V[4];
     
     f32& operator[](int index)
@@ -407,78 +270,37 @@ union fv4
         return this->V[index];
     }
     
-    fv4 operator-(fv4 Operand)
-    {
-        fv4 Result = {
-            this->x - Operand[0],
-            this->y - Operand[1],
-            this->z - Operand[2],
-            this->a - Operand[3]
-        };
-        return Result;
-    }
-    
-    fv4 operator+(fv4 Operand)
-    {
-        fv4 Result = {
-            this->x + Operand[0],
-            this->y + Operand[1],
-            this->z + Operand[2],
-            this->a + Operand[3]
-        };
-        return Result;
-    }
-    
-    fv4 operator/(f32 Operand)
-    {
-        fv4 Result = {
-            this->x / Operand,
-            this->y / Operand,
-            this->z / Operand,
-            this->a / Operand
-        };
-        return Result;
-    }
-    
-    fv4& operator+=(fv4 right)
-    {
-        this->x += right.x;
-        this->y += right.y;
-        this->z += right.z;
-        this->a += right.a;
-        return *this;
-    }
-    
-    fv4& operator-=(fv4 right)
-    {
-        this->x -= right.x;
-        this->y -= right.y;
-        this->z -= right.z;
-        this->a -= right.a;
-        return *this;
-    }
-    
-    fv4& operator*=(f32 right)
-    {
-        this->x *= right;
-        this->y *= right;
-        this->z *= right;
-        this->a *= right;
-        return *this;
-    }
 };
 
-inline fv4 
-operator*(f32 scalar, fv4 vector)
+union sv2Rectangle
 {
-    fv4 ret = {
-        scalar*vector.x, 
-        scalar*vector.y,
-        scalar*vector.z,
-        scalar*vector.w
+    struct
+    {
+        sv2 Min;
+        sv2 Max;
     };
-    return ret;
-}
+    struct
+    {
+        s32 MinX;
+        s32 MinY;
+        s32 MaxX;
+        s32 MaxY;
+    };
+};
+
+struct fv2Rectangle
+{
+    fv2 Min;
+    fv2 Max;
+};
+
+struct fv3Cube
+{
+    fv3 Min;
+    fv3 Max;
+};
+
+
 
 
 #endif //TYPES_H

@@ -1,5 +1,73 @@
 
 
+
+no phyics. only one forced movement can act on a player at once (like dota)
+
+buffs and debuffs can be weak, strong, or universal
+dispels on enemies remove all buffs with less than or equal strength to the dispel
+dispels on allies remove all debuffs with less than or equal strength to the dispel
+there is no such thing as a universal dispel or anything that removes universal modifiers
+BKB provides immunity to strong debuffs and magic resistance (still allows for casting of spells and application of debuff)
+maybe have a lesser BKB that provides immunity to weak debuffs
+
+fountain does not have a highground
+heroes are briefly immune after respawning, until they leave the fountain
+
+status resistance can exist, but it should not persist on debuffs that last longer than the status resistance buff
+also, things like poison deal the exact same damage every second, even when their duration is reduced
+status resistance does not change how much damage is dealt, or how often it is dealt
+it does change the total damage dealt
+there's no passive status resistance like sange or satanic. only from abilities like ursa's enrage
+
+no passive gold.
+you can buy items on credit, putting you at a negative gold total
+buying more than you have costs interest (interest is based on the item's original cost)
+you have to pay off interest before buying more items
+the amount you can spend on credit is based on a percentage of your net worth
+
+you don't lose gold on death
+
+each buyback makes each subsequent buyback increase by a scaling factor
+getting a killstreak reduces the scaling factor
+10x killstreak reduces the scaling factor to 1x
+buyback cooldown is 2 minutes + respawn time
+
+NO DoT in the game ticks down faster than once a second (because of refraction-type abilities)
+Cleave is no longer directional. It is a splash attack like league or like tiny tree grab
+Pseudo random distribution has an increased floor and a lower ceiling
+abilities like clinkz barrage or drow arrow only create one attack record so they cannot proc things like maelstrom multiple times
+Maelstrom does not have an internal cooldown
+
+No cast while channeling
+
+should linkens be in the game?
+
+lifesteal works after reductions so it's countered by armor
+blademail does not return a percentage of damage taken
+blademail triggers on attack and returns a flat number (built out of vanguard?)
+
+there is no max level
+levelling up just requires exponentially more exp
+once you have maxed out your abilities, you can level your skill tree
+skill tree offers powerful upgrades to abilities and can even create interactions between abilities
+after maxxing your skill tree, you can get generic stat bonuses
+skill tree upgrades should do roughly what the ability was already trying to do
+they should not fundamentally alter the way the ability works
+most are (substantial) number increases
+some skill tree nodes require multiple levels to be spent at once
+
+heroes have 0 base magic resist
+creeps have negative base magic resist
+makes kill calculations slightly easier
+
+modifiers do not automatically transfer to illusions
+crit is not copied
+auras like radiance are not copied
+passives that are specified to affect illusions automatically add the modifier to the illusion when the illusion is created
+modifiers that grant attributes do not need to be applied to illusions because attributes are copied automatically
+
+when using teleportation abilities, go to point closest to teleport location along a straight line. You can't teleport inside terrain then be pushed past teleport location.
+
 there's like 100+ spells in the game
 
 TRAITS, SKILLS, SPELLS, HEROIC ABILITIES, and TITLES:
@@ -116,4 +184,3 @@ fight - target nearest hero
 push - target nearest lane
 
 creeps use abilties automatically
-

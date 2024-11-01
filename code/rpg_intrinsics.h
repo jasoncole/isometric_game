@@ -5,6 +5,18 @@
 
 #include "math.h"
 
+#if COMPILER_MSVC
+#define CompletePreviousWritesBeforeFutureWrites _WriteBarrier();
+inline uint32 AtomicCompareExchangeUInt32(uint32 volatile* Value, uint32 Expected, uint32 New)
+{
+    uint32 Result = _InterlockedCompareExchange((long*)Value, Expected, New);
+    
+    return Result;
+}
+#else
+// TODO(casey): Need to define these on GCC/LLVM?
+#endif
+
 inline int32
 SignOf(int32 Value)
 {
@@ -81,6 +93,7 @@ s32Ceiling(real32 Real32)
 }
 
 #define ZeroStruct(Instance) ZeroSize(sizeof(Instance), &(Instance))
+#define ZeroArray(Pointer, Count) ZeroSize(Count * sizeof(Pointer[0]), Pointer)
 inline void
 ZeroSize(memory_index Size, void *Ptr)
 {
@@ -91,6 +104,41 @@ ZeroSize(memory_index Size, void *Ptr)
         *Byte++ = 0;
     }
 }
+
+inline void
+CopySize(memory_index Size, void* Src, void* Dest)
+{
+    // TODO(casey): Check this guy for performance
+    uint8* ByteSrc = (uint8*)Src;
+    uint8* ByteDest = (uint8*)Dest;
+    while(Size--)
+    {
+        *ByteDest++ = *ByteSrc++;
+    }
+}
+
+
+inline real32
+Sin(real32 Angle)
+{
+    real32 Result = sinf(Angle);
+    return(Result);
+}
+
+inline real32
+Cos(real32 Angle)
+{
+    real32 Result = cosf(Angle);
+    return(Result);
+}
+
+inline real32
+ATan2(real32 Y, real32 X)
+{
+    real32 Result = atan2f(Y, X);
+    return(Result);
+}
+
 
 struct bit_scan_result
 {

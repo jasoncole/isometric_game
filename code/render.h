@@ -5,13 +5,16 @@
 
 struct camera
 {
-    fv2 Pos;
+    // TODO: change everything to proj?
+    fv2 Pos; // NOTE: This is in proj space
     fv2 Dim;
     f32 inv_zoom; // multiply by dimension
 };
 
 struct bitmap
 {
+    fv2 Align;
+    
     s32 Width;
     s32 Height;
     s32 Pitch;
@@ -20,7 +23,7 @@ struct bitmap
 
 struct environment_map
 {
-    bitmap* LOD[4];
+    bitmap LOD[4];
 };
 
 enum render_entry_type
@@ -49,7 +52,10 @@ struct render_entry_quad
     
     fv4 Color;
     bitmap* Texture;
+    
     bitmap* NormalMap;
+    fv3 SurfaceNormal;
+    fv3 SurfaceUp;
     
     environment_map* Top;
     environment_map* Middle;
@@ -62,33 +68,30 @@ typedef u32 entity_id;
 
 struct render_entry_process_ui
 {
-    bitmap* Texture; // for alpha testing
+    bitmap* Hitmap; // TODO: produce hitmaps from assets
     fv2 ProjPos;
     fv2 XAxis;
     fv2 YAxis;
     
-    // TODO: move mouse pos to ui context?
     ui_context* UIContext;
     entity_id EntityID;
-    fv2 MousePos;
 };
-
 
 struct render_entry_grid
 {
     fv4 Color;
 };
 
-
 struct render_group
 {
-    f32 Z_to_Y;
-    
-    fv2 x_transform;
-    fv2 y_transform;
-    
+    union 
+    {
+        fv3 WorldOrigin;
+        fv2 NormScreenOrigin;
+    };
     camera* Camera;
     arena Buffer;
+    struct game_assets* Assets;
 };
 
 #endif //RENDER_H

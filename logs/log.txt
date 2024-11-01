@@ -25,6 +25,18 @@ if needed, more memory will be allocated to entities that have a lot of modifier
 actually, for now let's just give each entity enough space for the maximum amount of modifiers
 hopefully each modifier takes up a relatively small amount of space
 
+For something like movement code or projectiles
+I want to be able to operate on all the movable entities or all the projectiles at once and update their positions
+that's a situation where composition could be useful
+But for the modifiers,
+I want to be able to just attach modifiers on entities
+and those modifiers are randomly accessed at specific points in the code
+I never actually iterate through all the modifiers in a large group
+even when I'm iterating over all the modifiers relevant to a specific event,
+the scope of the event is relatively small
+
+
+
 problem: mouse on bitmap
 you have to check which bitmap the mouse is on when resolving the render buffer
 this is sort of ugly because only the render buffer is supposed to know where the entities get displayed on screen
@@ -33,12 +45,98 @@ so now you have to pass the following information to the render buffer
 1. entity id attached to bitmap
 2. mouse position
 this also delays mouse action by 1 frame, but its unavoidable since otherwise, the displayed position of the mouse and the position when it performs the check don't match up
-i should also add hit bitmaps that show exactly where the bitmap is 
+i should also add hit bitmaps that show exactly where the bitmap is so you can click on alpha pixels
 
 problem: hero ability/modifier file organization
-per hero, I want to have
-one file for all the abilities
-and one file for all the modifiers
+I want to have one file per hero, modifiers and abilities
 modifier is just a struct that is marked as a modifier for the preprocessor
 use type introspection so functions that call modifier know what data is inside
 also use metapropgramming to auto include all the hero files
+
+
+problem: spell/modifier organization
+the "spell" struct contains information about the specific spell owned by the hero
+the "spell_info" struct contains information common to all spells that share the same name
+
+option 1: modifier contains a pointer to the spell that cast it and uses that to get the spell info and level
+option 2: modifier contains a pointer to spell info and current level is passed to the modifier
+I think i will do option 2
+the only reason to do option 1 is if there is other information besides level that i would want to grab
+there's cases where i will have to pass the current level anyways because the modifier may persist after the ability gets levelled, so its better to streamline this for all modifiers
+
+problem: reflections will never look exactly right
+once there are reflections that use irregular normal maps, we can no longer guarantee that everything in the world will be viewed from the same angle
+potential solutions:
+1. have a bitmap for 6 sides of every object then lerp between whatever sides are visible
+2. only sample from front bitmap and reflection bitmap, then blur heavily
+3. sample from every texel and use the normal / position to estimate the proportion of light from that texel
+option (3) could also sample from bitmaps that are not drawn to the sscreen like options (1) and (2).
+
+problem: how to store modifier listeners
+each entity has to remember their active modifier event listeners
+option 1: have a table of listeners for each modifier event
+option 2: have one large arena for all the modifier events, use a linked list to group modifier events of same type
+I will go with option 2 since the memory footprint of different modifier events may vary drastically for different entities
+I don't think linked list will be an issue since all the memory is in roughly the same location and there are a limited number of listeners for each individual type
+|
+->secondary problem: sorting
+the only problem with using linked list is that we can't sort when the listeners trigger. I could change the structure to allow sorting, but I think it's better to remove order dependence entirely. If every modifier works the same no matter what order it happens, that's one less thing the player has to worry about
+
+
+entity
+I should use IDs if entity storage changes between different representations
+or if I want to reference entities that may or may not exist
+I don't think either case applies to me right now
+but it may apply for story mode
+I may want to store entities in a compressed storage state, in which case I would want a single id to refer to both the compressed entity and the blown-out entity
+Okay here's a reason why I might want the reference to an entity to persist after the entity dies
+When I'm attacking an entity, the attack needs to have a reference to the entity it is travelling towards,
+even if that entity is already dead
+
+think
+the game state has a think group that processes all the think functions at once
+putting all the update logic in one place means I can better reason about what order things happen
+perhaps later down the line I can order things by when they happen with subtick logic
+the think group is similar to the render group, but unlike the render group the think group persists between frames
+when something wants to add a think function, it just passes the think function to the think group
+a think function takes the game state, the thing that is thinking, and the time since last think
+
+problem: how to disjoint projectiles?
+I could just set a flag on an entity and the next time the projectiles think, they cancel if that flag is set
+I don't really like that solution tho, too order dependent
+I could store the tracking projectiles
+I don't want to iterate over entities to get to the projectiles
+I'd rather just iterate over all projectiles it makes more sense
+best solution i can think of is to have entities keep an array of pointers for all projectiles currently targeting them, then iterate through that array when entity needs to disjoint
+I don't love increasing the memory footprint of entities but it's the best i got for now
+I could also just bite the bullet and iterate through all projectiles, checking for any that are targeting the entity i want
+saving memory is probably more important than the cost of iterating through projectiles when a relatively uncommon situation occurs
+
+
+think group
+i want to be able to add thinkers from within the think group
+unfortunately this introduces a bug because the newly created thinker may be processed on the same frame it is created if the order is unlucky
+to fix this i will have a push buffer of thinkers that won't be added until the end of the frame
+
+
+since im separating world state update code (think) from normal code,
+maybe i should also create a boundary between world state and pure organizational state
+stuff like the move target can change outside of the think pass
+but stuff like world position should only change during the think pass
+I could have an "Entity Context" struct inside the entity
+sort of like how UI context works with imgui
+so outside of the think code you pass information to the context
+then the think code uses the context to figure out what to do
+
+
+assset organization
+each asset has tags. When you pass an asset, you pass a list of tags that you want and the asset system finds matching assets
+
+
+modifiers
+problem: each modifier has different information and I want to be able to process different modifiers the same way
+option 1: use a discriminated union
+option 2: use specific modifier types and use metaprogramming to generate individual code paths for repetitive operations
+option 2 is technically more memory efficient but I'll go with option 1 because it's simpler
+i checked and even if i have a very large modifier and 500 entities with 50 modifiers each, it still wouldn't use up more than a megabyte of memory. I can't think of a good reason to use option 2 besides that
+maybe it could help for some performance reasons but idk

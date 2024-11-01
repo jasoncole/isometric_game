@@ -1,0 +1,1 @@
+Modified font to contain an I without crossbars.

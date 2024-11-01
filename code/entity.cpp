@@ -1,56 +1,114 @@
 
-#define GetEntityIndex(EntityID) ((EntityID) - 1)
-#define EntityIDCheckBounds(EntityID) Assert(((EntityID) > 0) && ((EntityID) <= MAX_ENTITIES))
-
 // TODO: put these in a more reasonable place
 #define MAX_NODES 100
 #define PATH_ARENA_SIZE (sizeof(sv2)*MAX_NODES)
 
-inline b32
-EntityExists(game_state* GameState, entity_id EntitySlot)
+// NOTE: HashTableSize must be even
+inline u32
+HashEntityID(entity_id EntityID, u32 HashTableSize)
 {
-    b32 ret = TestBit(GameState->EntityFreeList, EntitySlot - 1);
-    return ret;
+    u32 HashValue = EntityID;
+    HashValue = ((HashValue >> 0) & 0xFF) + 
+    ((HashValue >> 8) & 0xFF) + 
+    ((HashValue >> 16) & 0xFF) + 
+    ((HashValue >> 24) & 0xFF);
+    HashValue = HashValue * EntityID;
+    u32 HashSlot = HashValue & (HashTableSize - 1);
+    Assert(HashSlot < HashTableSize);
+    
+    return HashSlot;
 }
 
-inline entity*
+internal entity*
 GetEntity(game_state* GameState, entity_id EntityID)
 {
-    entity* ret = &GameState->Entities[GetEntityIndex(EntityID)];
-    return ret;
+    if (EntityID == 0)
+    {
+        return 0;
+    }
+    u32 HashSlot = HashEntityID(EntityID, ArrayCount(GameState->Entities));
+    
+    entity* Entity = &GameState->Entities[HashSlot];
+    do
+    {
+        if (Entity->ID == EntityID)
+        {
+            return Entity;
+        }
+        Entity = Entity->NextInHash;
+    } while (Entity);
+    
+    return 0;
 }
 
-internal entity_id
+struct entity_result
+{
+    entity_id EntityID;
+    entity* EntityPtr;
+};
+
+internal entity_result
 CreateEntity(game_state* GameState)
 {
-    if (GameState->EntityCount < MAX_ENTITIES)
+    Assert(GameState->EntityIndex < 0xFFFFFFFF);
+    
+    entity_result Result;
+    Result.EntityID = ++GameState->EntityIndex;
+    u32 HashSlot = HashEntityID(Result.EntityID, ArrayCount(GameState->Entities));
+    
+    entity* Entity = &GameState->Entities[HashSlot];
+    if (Entity->ID)
     {
-        for (u32 EntityID = 1;
-             EntityID <= MAX_ENTITIES;
-             ++EntityID)
+        while (Entity->NextInHash)
         {
-            if (!EntityExists(GameState, EntityID))
+            Entity = Entity->NextInHash;
+        }
+        Entity->NextInHash = PushStruct(&GameState->GameArena, entity);
+        Entity = Entity->NextInHash;
+    }
+    Entity->ID = Result.EntityID;
+    Entity->PathArena = NestArena(&GameState->GameArena, PATH_ARENA_SIZE);
+    Result.EntityPtr = Entity;
+    
+    return Result;
+}
+
+inline entity_result
+SpawnEntity(game_state* GameState)
+{
+    Assert(GameState->AliveCount< MAX_ALIVE);
+    entity_result EntityResult = CreateEntity(GameState);
+    GameState->AliveEntities[GameState->AliveCount++] = EntityResult.EntityID;
+    return EntityResult;
+}
+
+internal void
+KillEntity(game_state* GameState, entity_id EntityID)
+{
+    for (u32 AliveIndex = 0;
+         AliveIndex < GameState->AliveCount;
+         ++AliveIndex)
+    {
+        if (GameState->AliveEntities[AliveIndex] == EntityID)
+        {
+            --GameState->AliveCount;
+            for (u32 CopyBack = AliveIndex;
+                 AliveIndex < GameState->AliveCount;
+                 ++CopyBack)
             {
-                GameState->EntityCount++;
-                SetBit(GameState->EntityFreeList, GetEntityIndex(EntityID));
-                
-                entity* Entity = GetEntity(GameState, EntityID);
-                ZeroStruct(*Entity);
-                Entity->PathArena = MakeArena((void*)(GameState->PathArenas.base + (GetEntityIndex(EntityID) * PATH_ARENA_SIZE)), PATH_ARENA_SIZE);
-                Entity->ModifierArena = MakeArena((void*)(GameState->ModifierArenas.base + (GetEntityIndex(EntityID) * MODIFIER_ARENA_SIZE)), MODIFIER_ARENA_SIZE);
-                return EntityID;
+                GameState->AliveEntities[CopyBack] = GameState->AliveEntities[CopyBack+1];
             }
+            return;
         }
     }
-    return 0;
 }
 
 inline void
 DeleteEntity(game_state* GameState, entity_id EntityID)
 {
-    EntityIDCheckBounds(EntityID);
-    ClearBit(GameState->EntityFreeList, GetEntityIndex(EntityID));
-    // TODO: zero entity?
-    GameState->EntityCount--;
+    entity* Entity = GetEntity(GameState, EntityID);
+    KillEntity(GameState, Entity->ID);
+    Entity->ID = 0;
+    // TODO: remove old entities from memory
 }
 
