@@ -140,3 +140,15 @@ option 2: use specific modifier types and use metaprogramming to generate indivi
 option 2 is technically more memory efficient but I'll go with option 1 because it's simpler
 i checked and even if i have a very large modifier and 500 entities with 50 modifiers each, it still wouldn't use up more than a megabyte of memory. I can't think of a good reason to use option 2 besides that
 maybe it could help for some performance reasons but idk
+
+preprocessor - autoincludes
+option 1:
+keep track of which files to include in the preprocessor and which are already included manually
+
+option 2:
+include every file in the preprocessor and only include h files in the main code
+
+option 3:
+include every file in the preprocessor and redefine includes so they don't execute in the main code
+
+option 1 is jank. option 2 does put constraints on the code, but the way it behaves is more predictable than option 3

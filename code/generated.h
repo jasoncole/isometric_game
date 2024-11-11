@@ -1,4 +1,3 @@
-#include "ghost.h"
 
 struct ghost_spectral_dagger
 {
@@ -62,8 +61,14 @@ InitSpellInfo(spell_info* SpellInfo)
     SpellInfo->GhostDispersion.DamageReduction[3] = 20.000000;
 }
 
+#include "heroes\fairy.h"
+#include "heroes\ghost.h"
+
 enum modifier_type
 {
+    ModifierType_modifier_event_cast,
+    ModifierType_modifier_event_attack,
+    ModifierType_modifier_event_damage,
     ModifierType_modifier_spectral_dagger_buff,
     ModifierType_modifier_spectral_dagger_debuff,
     ModifierType_modifier_spectral_form,
@@ -77,6 +82,9 @@ struct modifier
     modifier_type Type;
     union
     {
+        modifier_event_cast ModifierEventCast;
+        modifier_event_attack ModifierEventAttack;
+        modifier_event_damage ModifierEventDamage;
         modifier_spectral_dagger_buff ModifierSpectralDaggerBuff;
         modifier_spectral_dagger_debuff ModifierSpectralDaggerDebuff;
         modifier_spectral_form ModifierSpectralForm;

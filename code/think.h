@@ -29,6 +29,8 @@ struct projectile_record
     u32 Team;
 };
 
+struct modifier;
+
 #define ENTITY_THINK(name) f32 name(game_state* GameState, entity* Entity, f32 dt)
 typedef ENTITY_THINK(entity_think);
 #define MODIFIER_THINK(name) f32 name(game_state* GameState, modifier* Modifier, f32 dt)

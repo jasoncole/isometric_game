@@ -63,6 +63,7 @@ enum token_type
     Token_OpenBrace,
     Token_CloseBrace,
     Token_Hash,
+    Token_Comma,
     
     Token_Identifier,
     Token_String,
@@ -150,20 +151,5 @@ struct ll_string
     
     ll_string* Next;
 };
-
-struct file_name
-{
-    char* Name;
-    bool AutoInclude
-}
-
-static file_name
-InitFileName(char* Name, bool AutoInclude)
-{
-    file_name Result;
-    Result.Name = Name;
-    Result.AutoInclude = AutoInclude;
-    return Result;
-}
 
 #endif //PREPROCESSOR_H

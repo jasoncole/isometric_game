@@ -4,90 +4,11 @@ TODO:
  search for INCLUDE_DIRECTORY(directory) macro and make function that automatically writes include for all files in said directory
 make a recursive function that starts at rpg.cpp and looks for all #include statements and records all included files
 function should also look through the included files and see if they include any files
+
 */
 
 
 #include "preprocessor.h"
-
-static char* 
-ReadEntireFileIntoMemoryAndNullTerminate(char* FileName)
-{
-    char* Result = 0;
-    
-    FILE* File = fopen(FileName, "r");
-    if (File)
-    {
-        fseek(File, 0, SEEK_END);
-        size_t FileSize = ftell(File);
-        fseek(File, 0, SEEK_SET);
-        
-        Result = (char*)malloc(FileSize + 1);
-        fread(Result, FileSize, 1, File);
-        Result[FileSize] = 0;
-        
-        fclose(File);
-    }
-    
-    return Result;
-}
-
-// TODO: allocate memroy for filename here so I don't allocate if the file already exists
-static int
-AddFileName(bool AutoInclude, file_name* FileNames, int Count, char* Name, memory_index Length = 0)
-{
-    int FilesAdded = 0;
-    for (NameIndex = 0;
-         NameIndex < Count;
-         ++NameIndex)
-    {
-        if (StringEquals(FileNames[NameIndex].Name, Name))
-        {
-        }
-        else
-        {
-            char* NamePointer = ArenaTop;
-            if (Length)
-            {
-                Arena.Used += sprintf(NamePointer, "%.*s", (int)Length, Name);
-            }
-            else
-            {
-                Arena.Used += sprintf(NamePointer, "%s", Name);
-            }
-            FileNames[Count] = InitFileName(NamePointer, AutoInclude);
-            FilesAdded++;
-        }
-    }
-    return FilesAdded;
-}
-
-static int
-GetFilesInDirectory(file_name* FileNames, char* Directory)
-{
-    WIN32_FIND_DATA Data;
-    HANDLE hFind;
-    
-    int FileNameCount= 0;
-    
-    char DirectoryPath[256];
-    char* At = &DirectoryPath[0];
-    At += sprintf(At, "%s", Directory);
-    sprintf(At, "\\*");
-    
-    hFind = FindFirstFileA(DirectoryPath, &Data);
-    
-    do
-    {
-        if (!(Data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-        {
-            FileNameCount += AddFileName(true, FileNames, FileNameCount, Data.cFileName);
-        }
-    }
-    while (FindNextFile(hFind, &Data) != 0);
-    
-    return FileNameCount;
-}
-
 
 static bool 
 FileNameHasExtension(char* FileName, char* FileExtension)
@@ -114,6 +35,34 @@ FileNameHasExtension(char* FileName, char* FileExtension)
     }
     return true;
 }
+
+
+static char* 
+ReadEntireFileIntoMemoryAndNullTerminate(char* FileName)
+{
+    char* Result = 0;
+    
+    FILE* File = fopen(FileName, "r");
+    if (File)
+    {
+        fseek(File, 0, SEEK_END);
+        size_t FileSize = ftell(File);
+        fseek(File, 0, SEEK_SET);
+        
+        Result = (char*)malloc(FileSize + 1);
+        size_t EndOfFile = fread(Result, 1, FileSize, File);
+        Result[EndOfFile] = 0;
+        
+        fclose(File);
+    }
+    
+    return Result;
+}
+
+
+
+
+
 
 
 inline bool
@@ -152,15 +101,15 @@ IsNumber(char C)
     return Result;
 }
 
-#define NodeEquals(N, S) StringEquals((N).Text, (N).TextLength, (S))
-#define TokenEquals(T, S) StringEquals((T).Text, (T).TextLength, (S))
+#define NodeEquals(N, S) StringEquals((N).Text, (int)(N).TextLength, (S))
+#define TokenEquals(T, S) StringEquals((T).Text, (int)(T).TextLength, (S))
 
 inline bool
-StringEquals(char* str, char* Match, memory_index Length = -1)
+StringEquals(char* str, int Length, char* Match)
 {
-    Bool Result = false;
+    bool Result = false;
     
-    memory_index Index = 0;
+    int Index = 0;
     bool Scanning = true;
     while (Scanning)
     {
@@ -174,7 +123,7 @@ StringEquals(char* str, char* Match, memory_index Length = -1)
             }
         }
         else if ((*Match == 0) ||
-                 (*str != *At))
+                 (*str != *Match))
         {
             Scanning = false;
             Result = false;
@@ -189,6 +138,84 @@ StringEquals(char* str, char* Match, memory_index Length = -1)
     
     return Result;
 }
+
+
+// TODO: bug if there are two includes for different paths to same file
+// get the actual file pointer?
+static char*
+RegisterFileName(char** FileNames, int Count, char* Name, int Length = -1)
+{
+    char* Result = 0;
+    
+    char* NamePointer = ArenaTop;
+    bool AlreadyFound = false;
+    for (int NameIndex = 0;
+         NameIndex < Count;
+         ++NameIndex)
+    {
+        bool IsMatch = StringEquals(Name, Length, FileNames[NameIndex]);
+        
+        if (IsMatch)
+        {
+            AlreadyFound = true;
+            break;
+        }
+    }
+    if (!AlreadyFound)
+    {
+        if (Length >= 0)
+        {
+            Arena.Used += sprintf(NamePointer, "%.*s", Length, Name);
+        }
+        else
+        {
+            Arena.Used += sprintf(NamePointer, "%s", Name);
+        }
+        Arena.Used++;
+        FileNames[Count] = NamePointer;
+        Result = NamePointer;
+    }
+    return Result;
+}
+
+static int
+GetFilesInDirectory(char** FileNames, int Count, char* Directory, char* IncludeBuffer)
+{
+    WIN32_FIND_DATA Data;
+    HANDLE hFind;
+    
+    int FilesAdded = 0;
+    
+    char DirectoryPath[256];
+    char* At = &DirectoryPath[0];
+    At += sprintf(At, "%s", Directory);
+    At += sprintf(At, "\\");
+    sprintf(At, "*");
+    
+    hFind = FindFirstFileA(DirectoryPath, &Data);
+    
+    do
+    {
+        if (!(Data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+        {
+            sprintf(At, Data.cFileName);
+            char* FileName = RegisterFileName(FileNames, Count + FilesAdded, DirectoryPath);
+            if (FileName)
+            {
+                FilesAdded++;
+                
+                if (FileNameHasExtension(FileName, "h"))
+                {
+                    IncludeBuffer += sprintf(IncludeBuffer, "#include \"%s\"\n", FileName);
+                }
+            }
+        }
+    }
+    while (FindNextFile(hFind, &Data) != 0);
+    
+    return FilesAdded;
+}
+
 
 inline bool
 TokenHasPrefix(token Token, char* Prefix)
@@ -225,7 +252,7 @@ EatAllWhitespace(tokenizer* Tokenizer)
             }
         }
         else if ((Tokenizer->At[0] == '/') &&
-                 (Tokenizer->At[1] = '*'))
+                 (Tokenizer->At[1] == '*'))
         {
             Tokenizer->At += 2;
             while (Tokenizer->At[0] && 
@@ -243,6 +270,16 @@ EatAllWhitespace(tokenizer* Tokenizer)
         {
             break;
         }
+    }
+}
+
+static void
+SkipToNewLine(tokenizer* Tokenizer)
+{
+    while (Tokenizer->At[0] != '\n' &&
+           !IsEndOfLine(Tokenizer->At[0]))
+    {
+        ++Tokenizer->At;
     }
 }
 
@@ -270,6 +307,7 @@ GetToken(tokenizer* Tokenizer)
         case '{': { Token.Type = Token_OpenBrace; } break;
         case '}': { Token.Type = Token_CloseBrace; } break;
         case '#': { Token.Type = Token_Hash; } break;
+        case ',': { Token.Type = Token_Comma; } break;
         
         case '"': 
         {
@@ -362,6 +400,21 @@ RequireToken(tokenizer* Tokenizer, token_type DesiredType)
     token Token = GetToken(Tokenizer);
     bool ret = (Token.Type == DesiredType);
     return ret;
+}
+
+static int
+WriteFunctionParamsToBuffer(char* Buffer, tokenizer* Tokenizer)
+{
+    int CharCount = 0;
+    char* TokenizerStart = Tokenizer->At;
+    while (Tokenizer->At[0] != ')' &&
+           !IsEndOfLine(Tokenizer->At[0]))
+    {
+        ++Tokenizer->At;
+        ++CharCount;
+    }
+    int Result = sprintf(Buffer, "%.*s", CharCount, TokenizerStart);
+    return Result;
 }
 
 static void
@@ -992,15 +1045,17 @@ ProcessAST(ast_header* Node)
         else if (NodeEquals(*Key, "Descriptions"))
         {
         }
-    }
-    if (((ast_kv*)Node)->Next)
-    {
-        ProcessAST((ast_header*)((ast_kv*)Node)->Next);
+        if (((ast_kv*)Node)->Next)
+        {
+            ProcessAST((ast_header*)((ast_kv*)Node)->Next);
+        }
+        
     }
 }
 
+#if 0
 static ll_string*
-ParseCFile(tokenizer* Tokenizer)
+//PrintCFile(tokenizer* Tokenizer)
 {
     
     bool Parsing = true;
@@ -1068,26 +1123,34 @@ ParseCFile(tokenizer* Tokenizer)
     }
     return Result;
 }
+#endif
 
+/* NOTE:
+1. scans files for #include and INCLUDE_DIRECTORY
+2. prints struct definitions
+3. prints function prototypes to a buffer
+3. save filenames
+4. return number of filenames found
+*/
 
-static int
-FindIncludes(file_name* FileNames, char** FilePointers, tokenizer* Tokenizer)
+// TODO: make this function save modifier meta types like printcfile
+// TODO: maybe when I write function prototypes I should just write everything inside the parenthesis
+// there's stuff like default arguments that can make it hard to parse function parameters
+static void
+ParseCFile(char** FileNames, int* FileNameCount, tokenizer* Tokenizer, ll_string** ModifierRoot, ll_string** ModifierEnd, char* IncludeBuffer)
 {
     int FilesAdded = 0;
     
     bool Parsing = true;
-    bool FoundHash = false;
-    bool FoundInclude = false;
+    int IsInclude = 0;
     bool ExpectDirectory = false;
-    
-    char* FirstFileName = ArenaTop;
-    Arena.Used += sprintf(FirstFileName, "%s", FirstFile);
-    FileNames[FilesAdded++] = InitFileName(FirstFileName, false);
+    int IsStruct = 0;
     
     while(Parsing)
     {
         bool ResetInclude = true;
         bool ResetDirectory = true;
+        bool ResetStruct = true;
         
         token Token = GetToken(Tokenizer);
         switch(Token.Type)
@@ -1106,58 +1169,96 @@ FindIncludes(file_name* FileNames, char** FilePointers, tokenizer* Tokenizer)
                 if (ExpectDirectory & (!TokenEquals(Token, "directory")))
                 {
                     char DirectoryName[256];
-                    sprintf(&DirectoryName, "%.*s", (int)Token.TextLength, Token.Text);
-                    FilesAdded += GetFilesInDirectory(FileNames + FilesAdded, DirectoryName);
+                    sprintf(DirectoryName, "%.*s", (int)Token.TextLength, Token.Text);
+                    FilesAdded += GetFilesInDirectory(FileNames, *FileNameCount + FilesAdded, DirectoryName, IncludeBuffer);
                 }
-            }
-            else if (FoundHash)
-            {
-                if (TokenEquals(Token, "include"))
+                else if (IsInclude == 1)
                 {
-                    FoundInclude = true;
-                    ResetInclude = false;
+                    if (TokenEquals(Token, "include"))
+                    {
+                        IsInclude = 2;
+                        ResetInclude = false;
+                    }
+                    else
+                    {
+                        SkipToNewLine(Tokenizer);
+                    }
                 }
-            }
-            else if (TokenEquals(Token, "INCLUDE_DIRECTORY"))
+                else if (IsStruct == 1)
+                {
+                    if (TokenHasPrefix(Token, "modifier_"))
+                    {
+                        ll_string* ModifierTypeName = PushStruct(ll_string);
+                        ModifierTypeName->Length = Token.TextLength;
+                        ModifierTypeName->Text = Token.Text;
+                        ModifierTypeName->Next = 0;
+                        
+                        if (*ModifierEnd)
+                        {
+                            (*ModifierEnd)->Next = ModifierTypeName;
+                            *ModifierEnd = ModifierTypeName;
+                        }
+                        else
+                        {
+                            *ModifierRoot = ModifierTypeName;
+                            *ModifierEnd = *ModifierRoot;
+                        }
+                    }
+                    
+                }
+                else if (TokenEquals(Token, "INCLUDE_DIRECTORY"))
+                {
+                    ExpectDirectory = true;
+                    ResetDirectory = false;
+                }
+                else if (TokenEquals(Token, "struct"))
+                {
+                    IsStruct = 1;
+                    ResetStruct = false;
+                }
+                
+            } break;
+            
+            case Token_OpenParen:
             {
-                ExpectDirectory = true;
-                ResetDirectory = false;
-            }
-        } break;
-        
-        case Token_OpenParen:
-        {
-            ResetDirectory = false;
-        } break;
-        
-        case Token_Hash:
-        {
-            FoundHash = true;
-            ResetInclude = false;
+                if (ExpectDirectory)
+                {
+                    ResetDirectory = false;
+                }
+            } break;
+            
+            case Token_Hash:
+            {
+                IsInclude = 1;
+                ResetInclude = false;
+            } break;
+            
+            case Token_String:
+            {
+                if (IsInclude == 2)
+                {
+                    FilesAdded += ((RegisterFileName(FileNames, *FileNameCount + FilesAdded, Token.Text, (int)Token.TextLength)) ? 1 : 0);
+                }
+            } break;
+            
+            default:
+            {
+            } break;
         }
-        
-        case Token_String
+        if (ResetInclude)
         {
-            if (FoundInclude)
-            {
-                FilesAdded += AddFileName(false, FileNames, FilesAdded, Token.Text, Token.TextLength);
-            }
-        };
-        
-        default:
+            IsInclude = 0;
+        }
+        if (ResetDirectory)
         {
-        } break;
+            ExpectDirectory = false;
+        }
+        if (ResetStruct)
+        {
+            IsStruct = 0;
+        }
     }
-    if (ResetInclude)
-    {
-        FoundHash = false;
-        FoundInclude = false;
-    }
-    if (ResetDirectory)
-    {
-        ExpectDirectory = false;
-    }
-    return FilesAdded;
+    *FileNameCount += FilesAdded;
 }
 
 int 
@@ -1170,61 +1271,52 @@ main(int ArgCount, char** Args)
     
     char* MainFile = ReadEntireFileIntoMemoryAndNullTerminate("rpg.cpp");
     
-    file_name* FileNames = PushArray(file_name, 1024);
-    char** FilePointers = PushArray(char*, 1024);
+#define MAX_FILE_COUNT 1024
+    char** FileNames = PushArray(char*, MAX_FILE_COUNT);
+    char** FilePointers = PushArray(char*, MAX_FILE_COUNT);
+    char* IncludeBuffer = (char*)PushSize(Megabytes(5));
+    IncludeBuffer[0] = '\0';
     
-    // TODO: exclude platform code
-    int FileNameCount = 0;
+    // TODO: exclude platform code?
+    int FileCount = 0;
     
     char* FirstFileName = ArenaTop;
     Arena.Used += sprintf(FirstFileName, "rpg.cpp") + 1;
-    FileNames[FileNameCount++] = InitFileName(FirstFileName, 0);
+    FileNames[FileCount++] = FirstFileName;
     
-    // TODO: should  findincludes also print all struct definitions?
-    // It would have to save all function definitions to a buffer so it could write the function definitions after the struct definitions
-    // Lastly, write include the files specified by INCLUDE_DIRECTORY macro
-    for (int FileIndex = 0;
-         FileIndex < FileCount
-         ++FileIndex)
-    {
-        char* FileContents = ReadEntireFileIntoMemoryAndNullTerminate(FileNames[FileIndex]);
-        FilePointers[FileIndex] = Tokenizer->At;
-        Parsing = true;
-        
-        FileNameCount += FindIncludes(FileNames, FilePointers, &Tokenizer);
-        
-        
-    }
-    
-    char* OrderIndependentBuffer = (char*)PushSize(Megabytes(4)); // null-terminated
-    ll_string* ModifierTop = 0;
     ast_header* ASTTop = 0;
+    ll_string* ModifierRoot = 0;
+    ll_string* ModifierEnd = 0;
     for (int FileIndex = 0;
-         FileIndex < FileNameCount;
+         FileIndex < FileCount;
          ++FileIndex)
     {
-        file_name* FileName = FileNames + FileIndex;
-        char* FileContents = FilePointers[FileIndex];
+        char* FileName = FileNames[FileIndex];
+        char* FileContents = ReadEntireFileIntoMemoryAndNullTerminate(FileName);
+        FilePointers[FileIndex] = FileContents;
+        Tokenizer.At = FileContents;
+        
         if (FileContents)
         {
-            Tokenizer.At = FileContents;
-            if (FileNameHasExtension(FileName->Name, "cpp") || FileNameHasExtension(FileName->Name, "h"))
+            if (FileNameHasExtension(FileName, "cpp") || FileNameHasExtension(FileName, "h"))
             {
-                printf("#include \"%s\"\n", FileName);
-                //ModifierTop = ParseCFile(&Tokenizer, &ModifierTop, Buffer);
+                ParseCFile(FileNames, &FileCount, &Tokenizer, &ModifierRoot, &ModifierEnd, IncludeBuffer);
             }
-            else if (FileNameHasExtension(FileName->Name, "kv"))
+            else if (FileNameHasExtension(FileName, "kv"))
             {
-                // TODO: combine multiple kv files
                 ASTTop = (ast_header*)ParseKey(&Tokenizer);
             }
         }
     }
+    
     printf("\n");
     ProcessAST(ASTTop);
     
+    printf("\n");
+    printf(IncludeBuffer);
+    
     printf("\nenum modifier_type\n{\n");
-    for (ll_string* ModifierType = ModifierTop;
+    for (ll_string* ModifierType = ModifierRoot;
          ModifierType;
          ModifierType = ModifierType->Next)
     {
@@ -1239,7 +1331,7 @@ main(int ArgCount, char** Args)
     printf("union\n");
     PrintTabToIndentationLevel(1);
     printf("{\n");
-    for (ll_string* ModifierType = ModifierTop;
+    for (ll_string* ModifierType = ModifierRoot;
          ModifierType;
          ModifierType = ModifierType->Next)
     {

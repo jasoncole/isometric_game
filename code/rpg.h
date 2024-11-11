@@ -22,12 +22,14 @@
 #include "attack.h"
 #include "entity.h"
 #include "think.h"
-#include "generated.h"
 #include "modifier.h"
+#include "generated.h"
 #include "event.h"
 #include "rpg_platform.h"
 #include "pathfinding.cpp"
 #include "projectile.h"
+
+INCLUDE_DIRECTORY(heroes)
 
 struct ui_context
 {
