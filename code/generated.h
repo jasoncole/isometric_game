@@ -1,3 +1,4 @@
+#include "heroes\ghost\types.h"
 
 struct ghost_spectral_dagger
 {
@@ -61,35 +62,34 @@ InitSpellInfo(spell_info* SpellInfo)
     SpellInfo->GhostDispersion.DamageReduction[3] = 20.000000;
 }
 
-#include "heroes\fairy.h"
-#include "heroes\ghost.h"
-
 enum modifier_type
 {
-    ModifierType_modifier_event_cast,
-    ModifierType_modifier_event_attack,
-    ModifierType_modifier_event_damage,
-    ModifierType_modifier_spectral_dagger_buff,
-    ModifierType_modifier_spectral_dagger_debuff,
     ModifierType_modifier_spectral_form,
     ModifierType_modifier_spectral_form_damage_record,
+    ModifierType_modifier_spectral_dagger_buff,
+    ModifierType_modifier_spectral_dagger_debuff,
     ModifierType_modifier_haunt_illusion_illu,
     ModifierType_modifier_haunt_illusion_backpointer,
+    ModifierType_modifier_test,
+    
+ModifierType_Count
 };
 
 struct modifier
 {
-    modifier_type Type;
     union
     {
-        modifier_event_cast ModifierEventCast;
-        modifier_event_attack ModifierEventAttack;
-        modifier_event_damage ModifierEventDamage;
-        modifier_spectral_dagger_buff ModifierSpectralDaggerBuff;
-        modifier_spectral_dagger_debuff ModifierSpectralDaggerDebuff;
         modifier_spectral_form ModifierSpectralForm;
         modifier_spectral_form_damage_record ModifierSpectralFormDamageRecord;
+        modifier_spectral_dagger_buff ModifierSpectralDaggerBuff;
+        modifier_spectral_dagger_debuff ModifierSpectralDaggerDebuff;
         modifier_haunt_illusion_illu ModifierHauntIllusionIllu;
         modifier_haunt_illusion_backpointer ModifierHauntIllusionBackpointer;
+        modifier_test ModifierTest;
     };
+    modifier_type Type;
+    modifier_id ID;
+    modifier* NextInHash;
 };
+
+        

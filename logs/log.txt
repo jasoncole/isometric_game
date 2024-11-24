@@ -136,19 +136,26 @@ each asset has tags. When you pass an asset, you pass a list of tags that you wa
 modifiers
 problem: each modifier has different information and I want to be able to process different modifiers the same way
 option 1: use a discriminated union
-option 2: use specific modifier types and use metaprogramming to generate individual code paths for repetitive operations
+option 2: use a modifier header followed by specific modifier structs
 option 2 is technically more memory efficient but I'll go with option 1 because it's simpler
 i checked and even if i have a very large modifier and 500 entities with 50 modifiers each, it still wouldn't use up more than a megabyte of memory. I can't think of a good reason to use option 2 besides that
 maybe it could help for some performance reasons but idk
+if there ends up being a huge variance in modifier size I should probably use option 2
 
-preprocessor - autoincludes
-option 1:
-keep track of which files to include in the preprocessor and which are already included manually
+modifier storage
+store modifiers in game state or in entities?
+i think i will store in entities
+there doesn't seem to be many situations where I want to process all modifiers together
+it seems like there would be situations where I might want to process all modifiers attached to an entity
 
-option 2:
-include every file in the preprocessor and only include h files in the main code
+option 1: I can have a table that has an association between the modifier and the events they need to register,
+ as well as the names of the functions to register
+option 2: generate a very large switch statement
 
-option 3:
-include every file in the preprocessor and redefine includes so they don't execute in the main code
+i guess I will do option 1 since it seems easier to change later
+option 1: LUT for every modifier
+option 2: static array of modifier event lookups
+i will go with option 2 since it's more compact and there's no downsides because this info should never change
 
-option 1 is jank. option 2 does put constraints on the code, but the way it behaves is more predictable than option 3
+
+

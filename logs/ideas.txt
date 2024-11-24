@@ -1,4 +1,43 @@
 
+stats
+every stat should be useful for every hero
+no primary attributes
+each stat offers offensive and defensive potential
+strength gives damage, hp, and hp regen
+agility gives attack speed, movement speed, and evasion (evasion from agility is multiplicative with each other)
+intelligence gives mana and mana regen
+
+there are also heroic abilities that scale based on intelligence
+heroic abilities are equippable in base and you can swap them whenever you want
+
+heroic abilities:
+mana shield - reduce a percentage of incoming damage
+mana burst - gain brief invulnerability and slow enemies
+flash - propel a short distance in target direction
+armament mana - deal bonus on-hit magic damage
+aeon disk - block lethal damage then heal a small amount
+second wind - soft dispel and briefly increase movespeed
+restore - heal
+
+crafting:
+can collect materials from neutrals to use for crafting
+materials can be exchanged with other players
+materials can be used to craft powerful consumables or to upgrade normal items
+mid-game items like mek or desolator can be upgraded through crafting
+lategame items like manta style or butterfly have crafting upgrades that drastically change how the item works
+these can be sidegrades that make the item worse in some aspects but better in others
+
+barriers block all damage types and are not affected by reductions like armor or magic resistance
+barrier takes damage before health
+barrier automatically ticks down by a percentage of current barrier amount
+barrier is a hero stat and is not tied to any modifier
+for skills that previously used barrier like flame guard and aphotic shield, they are tied to a modifier that reduces damage until pre-reduction threshold is reached. multiple of these skills will all expire together
+
+
+lifesteal works as a percentage of damage dealt to health
+lifesteal is reduced by armor and negated by physical barrier
+lifesteal is not a strictly attack-based mechanic
+anything that does damage can lifesteal (but no lifesteal items)
 
 
 no phyics. only one forced movement can act on a player at once (like dota)
@@ -18,6 +57,8 @@ also, things like poison deal the exact same damage every second, even when thei
 status resistance does not change how much damage is dealt, or how often it is dealt
 it does change the total damage dealt
 there's no passive status resistance like sange or satanic. only from abilities like ursa's enrage
+alternatively: DoT works like negative hp regen
+does not deal damage at discrete intervals - so status resistance does not have lucky or unlucky breakpoitns
 
 no passive gold.
 you can buy items on credit, putting you at a negative gold total
@@ -37,6 +78,12 @@ Cleave is no longer directional. It is a splash attack like league or like tiny 
 Pseudo random distribution has an increased floor and a lower ceiling
 abilities like clinkz barrage or drow arrow only create one attack record so they cannot proc things like maelstrom multiple times
 Maelstrom does not have an internal cooldown
+
+Couriers are per hero
+Couriers do not have respawn timers
+If your courier dies, you have to walk back to base to revive it
+Couriers do not have vision, but allied dropped items are visible at all times
+You cannot normally interact with items from other players
 
 No cast while channeling
 

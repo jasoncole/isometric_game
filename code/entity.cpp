@@ -5,14 +5,14 @@
 
 // NOTE: HashTableSize must be even
 inline u32
-HashEntityID(entity_id EntityID, u32 HashTableSize)
+HashU32(u32 ID, u32 HashTableSize)
 {
-    u32 HashValue = EntityID;
+    u32 HashValue = ID;
     HashValue = ((HashValue >> 0) & 0xFF) + 
     ((HashValue >> 8) & 0xFF) + 
     ((HashValue >> 16) & 0xFF) + 
     ((HashValue >> 24) & 0xFF);
-    HashValue = HashValue * EntityID;
+    HashValue = HashValue * ID;
     u32 HashSlot = HashValue & (HashTableSize - 1);
     Assert(HashSlot < HashTableSize);
     
@@ -26,7 +26,7 @@ GetEntity(game_state* GameState, entity_id EntityID)
     {
         return 0;
     }
-    u32 HashSlot = HashEntityID(EntityID, ArrayCount(GameState->Entities));
+    u32 HashSlot = HashU32(EntityID, ArrayCount(GameState->Entities));
     
     entity* Entity = &GameState->Entities[HashSlot];
     do
@@ -54,7 +54,7 @@ CreateEntity(game_state* GameState)
     
     entity_result Result;
     Result.EntityID = ++GameState->EntityIndex;
-    u32 HashSlot = HashEntityID(Result.EntityID, ArrayCount(GameState->Entities));
+    u32 HashSlot = HashU32(Result.EntityID, ArrayCount(GameState->Entities));
     
     entity* Entity = &GameState->Entities[HashSlot];
     if (Entity->ID)
@@ -111,4 +111,11 @@ DeleteEntity(game_state* GameState, entity_id EntityID)
     Entity->ID = 0;
     // TODO: remove old entities from memory
 }
+
+inline ll_modifier_event_listener* GetModifierListenerRoot(entity* Entity, modifier_event_name EventType)
+{
+    ll_modifier_event_listener* Result = Entity->ModifierListenerRoots[EventType];
+    return Result;
+}
+
 

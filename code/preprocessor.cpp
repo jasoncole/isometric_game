@@ -1,9 +1,11 @@
 
 /*
 TODO:
- search for INCLUDE_DIRECTORY(directory) macro and make function that automatically writes include for all files in said directory
-make a recursive function that starts at rpg.cpp and looks for all #include statements and records all included files
-function should also look through the included files and see if they include any files
+
+maybe break up the ParseCFile function into some smaller functions. It's a bit of a rat's nest atm
+wasn't there a bug where I was loading the main file more than once?
+merge ASTs for multiple kv files
+are there some files I should exclude? (like platform code)
 
 */
 
@@ -139,18 +141,36 @@ StringEquals(char* str, int Length, char* Match)
     return Result;
 }
 
+inline bool
+StringMatch(char* str1, char* str2, int Length)
+{
+    bool Result = true;
+    for (int Index = 0;
+         Index < Length;
+         ++Index)
+    {
+        if (str1[Index] != str2[Index])
+        {
+            Result = false;
+            break;
+        }
+    }
+    
+    return Result;
+}
+
 
 // TODO: bug if there are two includes for different paths to same file
 // get the actual file pointer?
 static char*
-RegisterFileName(char** FileNames, int Count, char* Name, int Length = -1)
+RegisterFileName(char** FileNames, int* FileNameCount, char* Name, int Length = -1)
 {
     char* Result = 0;
     
     char* NamePointer = ArenaTop;
     bool AlreadyFound = false;
     for (int NameIndex = 0;
-         NameIndex < Count;
+         NameIndex < *FileNameCount;
          ++NameIndex)
     {
         bool IsMatch = StringEquals(Name, Length, FileNames[NameIndex]);
@@ -172,19 +192,18 @@ RegisterFileName(char** FileNames, int Count, char* Name, int Length = -1)
             Arena.Used += sprintf(NamePointer, "%s", Name);
         }
         Arena.Used++;
-        FileNames[Count] = NamePointer;
+        FileNames[*FileNameCount] = NamePointer;
+        *FileNameCount += 1;
         Result = NamePointer;
     }
     return Result;
 }
 
-static int
-GetFilesInDirectory(char** FileNames, int Count, char* Directory, char* IncludeBuffer)
+static void
+GetFilesInDirectory(parse_info* ParseInfo, char* Directory)
 {
     WIN32_FIND_DATA Data;
     HANDLE hFind;
-    
-    int FilesAdded = 0;
     
     char DirectoryPath[256];
     char* At = &DirectoryPath[0];
@@ -196,24 +215,32 @@ GetFilesInDirectory(char** FileNames, int Count, char* Directory, char* IncludeB
     
     do
     {
-        if (!(Data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+        if (Data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+        {
+            if (Data.cFileName[0] != '.')
+            {
+                sprintf(At, Data.cFileName);
+                GetFilesInDirectory(ParseInfo, DirectoryPath);
+            }
+        }
+        else
         {
             sprintf(At, Data.cFileName);
-            char* FileName = RegisterFileName(FileNames, Count + FilesAdded, DirectoryPath);
+            char* FileName = RegisterFileName(ParseInfo->FileNames, &ParseInfo->FileNameCount, DirectoryPath);
             if (FileName)
             {
-                FilesAdded++;
-                
                 if (FileNameHasExtension(FileName, "h"))
                 {
-                    IncludeBuffer += sprintf(IncludeBuffer, "#include \"%s\"\n", FileName);
+                    printf("#include \"%s\"\n", FileName);
+                }
+                else if (FileNameHasExtension(FileName, "cpp"))
+                {
+                    fprintf(ParseInfo->CFile, "#include \"%s\"\n", FileName);
                 }
             }
         }
     }
     while (FindNextFile(hFind, &Data) != 0);
-    
-    return FilesAdded;
 }
 
 
@@ -388,6 +415,7 @@ static token
 PeekToken(tokenizer* Tokenizer, int Index = 0)
 {
     char* OriginalAt = Tokenizer->At;
+    // TODO: wait, shouldn't index refer to the number of times to call gettoken?
     Tokenizer->At += Index;
     token Result = GetToken(Tokenizer);
     Tokenizer->At = OriginalAt;
@@ -844,9 +872,12 @@ PrintCamelCase(char* Text)
     return ret;
 }
 
-static void
+static char*
 nPrintCamelCase(memory_index Count, char* Text)
 {
+    char* ArenaIndex = ArenaTop;
+    char* ret = ArenaIndex;
+    
     bool FirstLetter = true;
     for (int Index = 0;
          Index < Count;
@@ -860,15 +891,19 @@ nPrintCamelCase(memory_index Count, char* Text)
         {
             if (FirstLetter)
             {
-                printf("%c", CapitalizeChar(Text[Index]));
+                ArenaIndex += sprintf(ArenaIndex, "%c", CapitalizeChar(Text[Index]));
             }
             else
             {
-                printf("%c", Text[Index]);
+                ArenaIndex += sprintf(ArenaIndex, "%c", Text[Index]);
             }
             FirstLetter = false;
         }
     }
+    *ArenaIndex++ = '\0';
+    Arena.Used += ArenaIndex - ret;
+    return ret;
+    
 }
 
 static void
@@ -1053,92 +1088,98 @@ ProcessAST(ast_header* Node)
     }
 }
 
-#if 0
-static ll_string*
-//PrintCFile(tokenizer* Tokenizer)
+static void
+ParseModifierEvent(tokenizer* Tokenizer, modifier_event_name_info**EndOfList)
 {
+    modifier_event_name_info* Result = PushStruct(modifier_event_name_info);
     
+    int Step = 0;
     bool Parsing = true;
-    bool IsStructName = false;
-    ll_string* LastString = 0;
-    ll_string* Result = 0;
-    while(Parsing)
+    bool FoundModifierEvent = false;
+    while (Parsing && !FoundModifierEvent)
     {
         token Token = GetToken(Tokenizer);
         switch(Token.Type)
         {
+            case Token_Identifier:
+            {
+                if (Step == 1)
+                {
+                    // modifier name
+                    Result->ModifierName.Text = Token.Text;
+                    Result->ModifierName.Length = Token.TextLength;
+                    
+                    Step = 2;
+                }
+                else if (Step == 3)
+                {
+                    // event name
+                    Result->EventName.Text = Token.Text;
+                    Result->EventName.Length = Token.TextLength;
+                    
+                    FoundModifierEvent = true;
+                }
+                else
+                {
+                    Parsing = false;
+                }
+            } break;
             
-            case Token_EndOfStream:
+            case Token_OpenParen:
+            {
+                if (Step == 0)
+                {
+                    Step = 1;
+                }
+                else
+                {
+                    Parsing = false;
+                }
+            } break;
+            
+            case Token_Comma:
+            {
+                if (Step == 2)
+                {
+                    Step = 3;
+                }
+                else
+                {
+                    Parsing = false;
+                }
+                
+            } break;
+            default:
             {
                 Parsing = false;
             } break;
-            
-            case Token_Unknown:
-            {
-            } break;
-            
-            case Token_Identifier:
-            {
-                if (IsStructName)
-                {
-                    IsStructName = false;
-                    
-                    if (TokenHasPrefix(Token, "modifier_"))
-                    {
-                        ll_string* ModifierTypeName = PushStruct(ll_string);
-                        ModifierTypeName->Length = Token.TextLength;
-                        ModifierTypeName->Text = Token.Text;
-                        ModifierTypeName->Next = 0;
-                        
-                        if (LastString)
-                        {
-                            LastString->Next = ModifierTypeName;
-                        }
-                        else
-                        {
-                            Result = ModifierTypeName;
-                        }
-                        LastString = ModifierTypeName;
-                        
-                    }
-                    else if (TokenHasPrefix(Token, "spell_info_"))
-                    {
-                        //printf("%d: %.*s\n", Token.Type, (int)Token.TextLength, Token.Text);
-                    }
-                    else if (TokenHasPrefix(Token, "spell_instance_"))
-                    {
-                        //printf("%d: %.*s\n", Token.Type, (int)Token.TextLength, Token.Text);
-                    }
-                }
-                else if (TokenEquals(Token, "struct"))
-                {
-                    IsStructName = true;
-                }
-            } break;
-            
-            default:
-            {
-            } break;
         }
     }
-    return Result;
+    if (FoundModifierEvent)
+    {
+        if (*EndOfList)
+        {
+            (*EndOfList)->Next = Result;
+        }
+        else
+        {
+            *EndOfList = Result;
+        }
+        Result->Next = 0;
+    }
+    else
+    {
+        Arena.Used -= sizeof(modifier_event_name_info);
+    }
 }
-#endif
 
-/* NOTE:
-1. scans files for #include and INCLUDE_DIRECTORY
-2. prints struct definitions
-3. prints function prototypes to a buffer
-3. save filenames
-4. return number of filenames found
-*/
-
-// TODO: make this function save modifier meta types like printcfile
-// TODO: maybe when I write function prototypes I should just write everything inside the parenthesis
-// there's stuff like default arguments that can make it hard to parse function parameters
 static void
-ParseCFile(char** FileNames, int* FileNameCount, tokenizer* Tokenizer, ll_string** ModifierRoot, ll_string** ModifierEnd, char* IncludeBuffer)
+ParseCFile(parse_info* ParseInfo, tokenizer* Tokenizer)
 {
+    char** FileNames = ParseInfo->FileNames;
+    ll_string* ModifierRoot = ParseInfo->ModifierRoot;
+    ll_string* ModifierEnd = ParseInfo->ModifierEnd;
+    
     int FilesAdded = 0;
     
     bool Parsing = true;
@@ -1170,7 +1211,7 @@ ParseCFile(char** FileNames, int* FileNameCount, tokenizer* Tokenizer, ll_string
                 {
                     char DirectoryName[256];
                     sprintf(DirectoryName, "%.*s", (int)Token.TextLength, Token.Text);
-                    FilesAdded += GetFilesInDirectory(FileNames, *FileNameCount + FilesAdded, DirectoryName, IncludeBuffer);
+                    GetFilesInDirectory(ParseInfo, DirectoryName);
                 }
                 else if (IsInclude == 1)
                 {
@@ -1186,30 +1227,42 @@ ParseCFile(char** FileNames, int* FileNameCount, tokenizer* Tokenizer, ll_string
                 }
                 else if (IsStruct == 1)
                 {
-                    if (TokenHasPrefix(Token, "modifier_"))
+                    if (TokenHasPrefix(Token, "modifier_event_"))
+                    {
+                    }
+                    else if (TokenHasPrefix(Token, "modifier_"))
                     {
                         ll_string* ModifierTypeName = PushStruct(ll_string);
                         ModifierTypeName->Length = Token.TextLength;
                         ModifierTypeName->Text = Token.Text;
                         ModifierTypeName->Next = 0;
                         
-                        if (*ModifierEnd)
+                        if (ModifierEnd)
                         {
-                            (*ModifierEnd)->Next = ModifierTypeName;
-                            *ModifierEnd = ModifierTypeName;
+                            ModifierEnd->Next = ModifierTypeName;
+                            ModifierEnd = ModifierTypeName;
                         }
                         else
                         {
-                            *ModifierRoot = ModifierTypeName;
-                            *ModifierEnd = *ModifierRoot;
+                            ModifierRoot = ModifierTypeName;
+                            ModifierEnd = ModifierRoot;
                         }
                     }
-                    
                 }
+                
                 else if (TokenEquals(Token, "INCLUDE_DIRECTORY"))
                 {
                     ExpectDirectory = true;
                     ResetDirectory = false;
+                }
+                else if (TokenEquals(Token, "MODIFIER_EVENT"))
+                {
+                    ParseModifierEvent(Tokenizer, &ParseInfo->ModifierEventNameInfoEnd);
+                    if ((ParseInfo->ModifierEventNameInfoRoot == 0) &&
+                        (ParseInfo->ModifierEventNameInfoEnd != 0))
+                    {
+                        ParseInfo->ModifierEventNameInfoRoot = ParseInfo->ModifierEventNameInfoEnd;
+                    }
                 }
                 else if (TokenEquals(Token, "struct"))
                 {
@@ -1237,7 +1290,7 @@ ParseCFile(char** FileNames, int* FileNameCount, tokenizer* Tokenizer, ll_string
             {
                 if (IsInclude == 2)
                 {
-                    FilesAdded += ((RegisterFileName(FileNames, *FileNameCount + FilesAdded, Token.Text, (int)Token.TextLength)) ? 1 : 0);
+                    RegisterFileName(FileNames, &ParseInfo->FileNameCount, Token.Text, (int)Token.TextLength);
                 }
             } break;
             
@@ -1258,7 +1311,9 @@ ParseCFile(char** FileNames, int* FileNameCount, tokenizer* Tokenizer, ll_string
             IsStruct = 0;
         }
     }
-    *FileNameCount += FilesAdded;
+    
+    ParseInfo->ModifierRoot = ModifierRoot;
+    ParseInfo->ModifierEnd = ModifierEnd;
 }
 
 int 
@@ -1274,21 +1329,21 @@ main(int ArgCount, char** Args)
 #define MAX_FILE_COUNT 1024
     char** FileNames = PushArray(char*, MAX_FILE_COUNT);
     char** FilePointers = PushArray(char*, MAX_FILE_COUNT);
-    char* IncludeBuffer = (char*)PushSize(Megabytes(5));
-    IncludeBuffer[0] = '\0';
+    //char* IncludeBuffer = (char*)PushSize(Megabytes(5));
+    //IncludeBuffer[0] = '\0';
     
-    // TODO: exclude platform code?
-    int FileCount = 0;
+    parse_info ParseInfo = {};
+    ParseInfo.FileNames = FileNames;
+    //ParseInfo.IncludeBuffer = IncludeBuffer;
+    ParseInfo.CFile = fopen("generated.cpp", "w");
     
     char* FirstFileName = ArenaTop;
     Arena.Used += sprintf(FirstFileName, "rpg.cpp") + 1;
-    FileNames[FileCount++] = FirstFileName;
+    FileNames[ParseInfo.FileNameCount++] = FirstFileName;
     
     ast_header* ASTTop = 0;
-    ll_string* ModifierRoot = 0;
-    ll_string* ModifierEnd = 0;
     for (int FileIndex = 0;
-         FileIndex < FileCount;
+         FileIndex < ParseInfo.FileNameCount;
          ++FileIndex)
     {
         char* FileName = FileNames[FileIndex];
@@ -1300,10 +1355,11 @@ main(int ArgCount, char** Args)
         {
             if (FileNameHasExtension(FileName, "cpp") || FileNameHasExtension(FileName, "h"))
             {
-                ParseCFile(FileNames, &FileCount, &Tokenizer, &ModifierRoot, &ModifierEnd, IncludeBuffer);
+                ParseCFile(&ParseInfo, &Tokenizer);
             }
             else if (FileNameHasExtension(FileName, "kv"))
             {
+                // TODO: merge ASTs
                 ASTTop = (ast_header*)ParseKey(&Tokenizer);
             }
         }
@@ -1312,35 +1368,124 @@ main(int ArgCount, char** Args)
     printf("\n");
     ProcessAST(ASTTop);
     
-    printf("\n");
-    printf(IncludeBuffer);
+    // PRINT MODIFIER META TYPE
     
     printf("\nenum modifier_type\n{\n");
-    for (ll_string* ModifierType = ModifierRoot;
+    for (ll_string* ModifierType = ParseInfo.ModifierRoot;
          ModifierType;
          ModifierType = ModifierType->Next)
     {
         PrintTabToIndentationLevel(1);
         printf("ModifierType_%.*s,\n", (int)ModifierType->Length, ModifierType->Text);
     }
-    printf("};\n\n");
-    printf("struct modifier\n{\n");
     PrintTabToIndentationLevel(1);
-    printf("modifier_type Type;\n");
+    printf("\nModifierType_Count\n");
+    printf("};\n\n");
+    
+    
+    // PRINT MODIFIER STRUCT
+    
+    printf("struct modifier\n{\n");
     PrintTabToIndentationLevel(1);
     printf("union\n");
     PrintTabToIndentationLevel(1);
     printf("{\n");
-    for (ll_string* ModifierType = ModifierRoot;
+    for (ll_string* ModifierType = ParseInfo.ModifierRoot;
          ModifierType;
          ModifierType = ModifierType->Next)
     {
         PrintTabToIndentationLevel(2);
         printf("%.*s ", (int)ModifierType->Length, ModifierType->Text);
-        nPrintCamelCase(ModifierType->Length, ModifierType->Text);
+        char* CamelCaseModifier = nPrintCamelCase(ModifierType->Length, ModifierType->Text);
+        printf(CamelCaseModifier);
         printf(";\n");
     }
+    
+    
     PrintTabToIndentationLevel(1);
-    printf("};\n};");
+    printf("};\n");
+    
+    PrintTabToIndentationLevel(1);
+    printf("modifier_type Type;\n");
+    PrintTabToIndentationLevel(1);
+    printf("modifier_id ID;\n");
+    PrintTabToIndentationLevel(1);
+    printf("modifier* NextInHash;\n");
+    printf("};\n\n");
+    
+    // NOTE: BELOW SHOULD BE PRINTED IN GENERATED.CPP
+    // -----------------------------------------------------------
+    fprintf(ParseInfo.CFile, "\n");
+    
+    // PRINT CALLBACK LOOKUP TABLE FOR EACH MODIFIER
+    
+    // NOTE: 
+    // 1. get element of linked list
+    // 2. iterate through linked list, removing and printing all elements with matching modifier name
+    // 3. repeat step 1
+    char* CallbackBuffer = (char*)PushSize(Megabytes(5));
+    CallbackBuffer[0] = '\0';
+    char* CallbackBufferIndex = CallbackBuffer;
+    
+    modifier_event_name_info* ModEventRoot  = ParseInfo.ModifierEventNameInfoRoot;
+    while (ModEventRoot)
+    {
+        stringinplace* CurrentModifier = &ModEventRoot->ModifierName;
+        fprintf(ParseInfo.CFile, "modifier_event_callback CallbacksFor_%.*s[] = \n{\n", (int)CurrentModifier->Length, CurrentModifier->Text);
+        //char* CamelCaseModifier = nPrintCamelCase(CurrentModifier->Length, CurrentModifier->Text);
+        
+        modifier_event_name_info* NewRoot = 0;
+        modifier_event_name_info* LastCurrent = 0;
+        modifier_event_name_info* LastNonCurrent = 0;
+        for (modifier_event_name_info* ModEventIter = ModEventRoot;
+             ModEventIter;
+             ModEventIter = ModEventIter->Next)
+        {
+            if (StringMatch(CurrentModifier->Text, ModEventIter->ModifierName.Text, (int)CurrentModifier->Length))
+            {
+                PrintTabToIndentationLevel(1);
+                fprintf(ParseInfo.CFile, "{ ModifierEvent_%.*s, ", (int)ModEventIter->EventName.Length, ModEventIter->EventName.Text);
+                fprintf(ParseInfo.CFile, "%.*s__", (int)ModEventIter->ModifierName.Length, ModEventIter->ModifierName.Text);
+                fprintf(ParseInfo.CFile, "%.*s },\n", (int)ModEventIter->EventName.Length, ModEventIter->EventName.Text);
+                
+                if (LastNonCurrent)
+                {
+                    LastNonCurrent->Next = ModEventIter->Next;
+                }
+                if (LastCurrent)
+                {
+                    LastCurrent->Next = ModEventIter;
+                }
+                LastCurrent = ModEventIter;
+            }
+            else
+            {
+                if (NewRoot == 0)
+                {
+                    NewRoot = ModEventIter;
+                }
+                LastNonCurrent = ModEventIter;
+            }
+        }
+        // reconencting the linked list is technically not necessary
+        if (LastCurrent)
+        {
+            LastCurrent->Next = NewRoot;
+        }
+        
+        fprintf(ParseInfo.CFile, "};\n\n");
+        
+        // save modifier name to buffer
+        CallbackBufferIndex += sprintf(CallbackBufferIndex, "ModifierCallbackLUT[ModifierType_%.*s] = ", (int)CurrentModifier->Length, CurrentModifier->Text);
+        CallbackBufferIndex += sprintf(CallbackBufferIndex, "InitCallbackLookup(&CallbacksFor_%.*s[0], ", (int)CurrentModifier->Length, CurrentModifier->Text);
+        CallbackBufferIndex += sprintf(CallbackBufferIndex, "ArrayCount(CallbacksFor_%.*s));\n", (int)CurrentModifier->Length, CurrentModifier->Text);
+        
+        ModEventRoot = NewRoot;
+    }
+    
+    // NOTE: print function to initialize ModifierCallbackLUT
+    fprintf(ParseInfo.CFile, "internal void\nInitModifierCallbackLUT(callback_lookup* ModifierCallbackLUT)\n{\n");
+    fprintf(ParseInfo.CFile, CallbackBuffer);
+    fprintf(ParseInfo.CFile, "}\n\n");
     
 }

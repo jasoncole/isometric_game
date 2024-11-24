@@ -130,6 +130,14 @@ NormScreenToProj(camera* Camera, fv2 NormScreen)
     return ret;
 }
 
+// TODO: move this to like a vector file? I don't want game code to be using functions from the render file
+inline fv2
+GetNormalizedProjDirection(fv3 Start, fv3 End)
+{
+    fv2 ret = fv2Normalize(WorldToProj(Start - End));
+    return ret;
+}
+
 inline fv4
 u32_to_fv4Color(u32 Color)
 {

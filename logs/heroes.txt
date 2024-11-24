@@ -1,6 +1,5 @@
 
 DO NOT ADD:
-Templar Assassin - psi blades turn auto attacks into skill shots, which don't really belong
 Meepo - clicking individual meepos is necessary to play correctly but controls don't support it
 Nyx - worst hero
 Pangolier - vector targeting, bouncing off terrain is dumb
@@ -18,27 +17,27 @@ IDEAS:
 Ghost (Spectre)
 Spectral Dagger - launch a wide, slow-moving projectile. projectile damages, slows, and grants vision of enemies it passes through. Gain free pathing while on dagger's path.
 Shriek - emits a piercing scream that reduces enemy resistances. Twice as effective against lone enemies
-Spectral Form - Reduce 5/10/15/20% of all incoming damage. A portion of this damage is stored for 10 seconds and can be dealt back by ghost's attacks.
+Memories of Murder - Reduce 5/10/15/20% of all incoming damage. A portion of this damage is stored for 10 seconds and can be dealt back by ghost's attacks.
 *Haunt* - Create an illusion on target enemy hero.
 Torment - Appear at Haunt illusion closest to target point
 
-ghost Skill tree:
+Ghost Skill tree:
 Endless Torment - reduced Haunt cooldown
 Haunt/Shriek upgrade - Haunt illusion automatically casts shriek when it spawns
+Spectral dagger increased speed
 
 Vampire (NightStalker)
 The Ritual (innate) - kills earned by Vampire at night make night last longer for the rest of the game
-Bat Swarm - damage and slow target enemy. Slow lasts longer at night.
+Bat Swarm - damage, ministun, and slow target enemy. Slow lasts longer at night.
 Shadowform - Vampire retreats into his shadow, becoming immune to damage. The shadow is not visible to enemies at night.
-Hunter in the night - Gain bonus attack speed and movement speed at night
-*Blood Suck* - grab and bite target enemy. Deals heavy damage and heals Vampire for the same amount.
+Apex Predator - Gain bonus attack speed and movement speed. Bonus is tripled at night.
+*Blood Suck* - stun and deal heavy damage to target enemy. 100% lifesteal. Reduced cooldown at night.
 
 Fairy (Puck)
-Illusory Orb - launch damaging orb in target direction
-Tadah! - appear at location of orb
+Illusory Orb/Tadah! - launch damaging orb in target direction. cast sub-ability to appear at orb location
 Waning Rift - teleport a short distance forward, then damage and silence all nearby enemies
 Phase Shift - disappear momentarily
-*Dream Coil* - tether enemies near target point
+*Dream Coil* - tether nearby enemies to target point
 
 Fairy skilltree:
 waning rift increased range and radius
@@ -47,8 +46,8 @@ waning rift increased range and radius
 Faceless Void
 Time Walk - leap to target location, gaining invulnerability during leap. Recent damage is reverted
 Time Dilation - gain bonus movespeed and attack speed. When the duration is over, lose movespeed and attack speed instead
-Bash - attach has a chance to stun and attack again
-*Chronosphere* - stun all units in circle except for Faceless Void.
+Bash - attack has a chance to stun and attack again
+*Chronosphere* - stun all other units in radius.
 
 Faceless Void skilltree:
 time dilation buff doesn't tick down inside chronosphere
@@ -77,7 +76,7 @@ Gun (Innate) - Has gun with 6 bullets giving gunslinger a ranged attack. Can be 
 Roll - roll in target direction, briefly becoming untargetable, disjointing projectiles, and phasing through units
 Bullseye - Launch projectile attack in target direction, striking the first enemy hit. Range is based on attack range. Deals bonus damage based on missing health.
 Ace in the hole - passive. Gun deals more damage the less bullets are in the chamber. Getting a hero kill loads a bullet into the chamber and reduces cooldowns.
-*Bullet Time* - Can be activated to equip another gun for a short amount of time, reducing BAT and gaining the ability to attack without turning
+*Bullet Time* - Can be activated to equip another gun for a short amount of time, reducing BAT
 
 Earth Spirit
 Statue (Innate) - place a statue that interacts with other abilities
@@ -86,17 +85,28 @@ Rolling Boulder - roll in target direction and slow first contacted enemy hero
 The Hand - stun and damage in small area. If the hand hits a statue, that statue will be sent towards earth spirit and stun and damage any enemies along the way
 Magnetize - enemies around earth spirit take DoT and are pulled towards statues and Earth Spirit
 
-Deep Sea Diver (Arc Warden)
-magic door - channel to teleport anywhere in range (like 2 screens)
-Magnetic field - slow and damage all enemies in bubble, and they miss when attacking enemies outside bubble
-spark wraith
-tempest double - summon an exact copy of your hero. The copy can copy itself if the original dies. Casting tempest double when two arc wardens already exist will automatically kill the other copy
+Deep Sea Diver (Arc Warden) slightly reduced BAT?
+Magic Door - channel to teleport anywhere in range (like 2 screens)
+Magnetic Field - slow and damage all enemies in bubble, and they miss when attacking enemies outside bubble
+Spark Wraith
+Tempest Double - summon an exact copy of your hero. The copy can copy itself if the original dies. A maximum of two copies can exist at a time.
+
+Deep Sea Diver skilltree:
+increased bubble slow
+increased magic door range
+reduced tempest double cooldown
+
+
 
 Ember Spirit
-searing chains - 2 targets
-sleight of fist - does not require turning
-flame guard - damage to barriers resets blink dagger cooldown
-fire remnant - teleports to remnant after animation, no travel time
+Searing Chains - 2 targets
+Sleight of Fist - does not require turning. No bonus damage. Increased cooldown
+Flame Guard - (I don't really like how flame guard goes away when the shield is broken. It feels unfun to use) burning enemies generates shield?
+Fire Remnant - teleports to remnant after animation, no travel time, does not require turning
+
+Ember Spirit skilltree:
++1 Searing chains targets
+Decreased Sleight of Fist cooldown
 
 Drow Ranger
 frost arrows - can stack, slowing more and more. at max stacks freezes enemy, reducing their armor to zero until they take a physical damage threshold (if a singular attack exceeds the threshold, ony the damage until the threshold will pierce armor)
@@ -177,8 +187,8 @@ berserker's blood - gain attack speed and health regen at low health
 blaze of glory - huskar sets himself on fire, losing a percentage of his health per second but applying stacks of burning to enemies around him. His attacks also apply stacks of burning.
 
 Succubus (Queen of Pain)
-Sadist (innate) - heal for 20% of all damage dealt
-Poison Dagger - single target projectile. applies slow and damage. debuffed enemy takes bonus magic damage from attacks
+Sadist (innate) - 20% lifesteal for all damage dealt
+Poison Dagger - single target projectile. applies slow and DoT. debuffed enemy takes bonus magic damage from attacks
 Blink
 Scream of Pain - deals damage after a delay instead of instantly. deals more damage
 *Fanservice* - launches a large area projectile than damages enemies and briefly fears them towards Succubus
@@ -267,8 +277,8 @@ Guardian Angel - buff nearby teammates with weak dispel and block 3/4/5 instance
 
 
 Pudge
-Fresh Meat! (innate) - gain stacks when near kill. each stack grants +2 strength
-Meat hook - gains range with fresh meat stacks
+(idk if i want flesh heap stack scaling, it's kinda dumb way too scale)
+Meat hook
 Rot - gains radius and damage with fresh meat stacks
 Flesh Heap - passive all damage block. scales with fresh meat stacks
 *Eat* - Pudge ingests target ally or enemy before spitting them back out. Pudge is slowed while eating. If its an enemy they take damage. Ingested target cannot take damage from outside sources (unfortunately anti-rot synergy)
@@ -320,17 +330,23 @@ battle trance - becomes unkillable and gains lifesteal (still controllable)
 Caster (Windrunner)
 magic bind - searches around the initial target instead of behind them
 Powershot - creates a magic circle to shoot the blast so if windrunner moves, the powershot will still go on the same path when it was cast. Has a perfect shot mechanic like nataruk that increases projectile speed and damage. Does not change damage/speed by passing through more enemies
-husk hop - cannot air strafe
+husk hop - cannot air strafe (should you be able to cast abilities while being moved by another ability?)
 Spell barrage - automatically shoots the nearest enemy in range, prioritizing heroes
 
 
 Sniper
 shrapnel - provides vision instantly, slows and damages after a delay
-headshot - chance to deal bonus damage and ministun
+headshot - same?
 take aim
-*stalk* - go invisible. the next attack that breaks invisibility has reduced BAT, increased range, and guaranteed crit
+*stalk* - go invisible. the next attack that breaks invisibility has increased BAT, increased range, and guaranteed crit
 
-Storm Spirit - same
+
+Storm Spirit
+static remnant
+electric vortex
+overload
+ball lightning - attacking/casting in ball lightning does not require turning. Ball lightning has an attack animation. Ball lightning doesn't cost a percentage of max mana?
+
 
 
 Slark
@@ -405,14 +421,14 @@ hand of god - burst heal all allied heroes and fully heals units under chen's co
 
 enchantress - sexier design
 nature's attendants
-enchant - temporarily take control of a creep
+enchant - cast on creep to take control of it. Cast on hero to fear them towards enchantress (are these effects too disjointed?)
 untouchable
-impetus - ult
+*impetus*
 
 Phantom assassin
 Stifling dagger - instant attack. always deals full damage, cooldown and slow scale with levels
-phantom strike - gain evasion after teleporting
-silent killer - smoke yourself and gain attack speed. when breaking smoke gain double the attack speed bonus
+Evasive Blink - gain evasion after teleporting
+silent killer - gain invisibility and attack speed. invisibility is not revealed by true sight but the buff is removed when near enemy heroes or towers. attack speed bonus lingers for a short while after buff is dispelled.
 coup de grace - just a crit.
 
 Gyrocopter
@@ -451,14 +467,14 @@ reduced psi blade cooldown
 Kunkka
 torrent
 tidebringer - spell that launches a wave in a direction, dealing damage based on attack and briefly pushing back enemies
-x marks - strong dispellable?
+x marks - balance-wise it would make more sense to be universal on allies and strong on enemies. however I don't want to have two different spell strengths on the same spell.
 ghost ship - travels a set distance from kunkka
 
 Tidehunter
-gush - ground target like the aghanim's upgrade
-anchor smash - deals damage based on attack damage but does not count as an attack
-kraken shell - regenerating all-damage barrier that dispels when broken. if barrier is able to regenerate all the way, it strong dispels. if it only regenerates partially, it weak dispels
-ravage
+Gush - ground target like the aghanim's upgrade
+Anchor Smash - deals damage based on attack damage but does not count as an attack
+Kraken Shell - regenerating all-damage barrier that dispels when broken. if barrier is able to regenerate all the way, it strong dispels. if it only regenerates partially, it weak dispels
+Ravage
 
 Tidehunter skilltree:
 bonus attack damage
@@ -496,5 +512,17 @@ empower - gives nearby enemies a debuff that spreads damage taken to nearby alli
 skewer
 reverse polarity
 
+shield hero (void spirit)
+shadow (innate) - create shadow that deals damage in an aoe around it after you cast a spell
+shadow projection - send a slashing shadow in target direction, dealing damage in an area and leaving a shadow at the destination
+convert current HP into shields (shields continuously tick down)
+deals a percentage of shields as damage
+dissimilate - point target. have to select exit location when you cast the spell. can change exit location with sub-ability?
+line dash - 2 charges. pulls along any shadows along the way
 
+saintess
+restore
+holy armaments - bonus pure damage on attack
+repel evil - channeling spell that grants weak spell immunity to allies in range
+*divine barrier* - makes target allied hero immune for a short duration
 

@@ -3,7 +3,8 @@
 #ifndef MODIFIER_H
 #define MODIFIER_H
 
-#define MODIFIER_ARENA_SIZE Kilobytes(64)
+typedef u32 modifier_id;
+typedef u32 entity_id;
 
 #define MODIFIER_STATE_COUNT 5
 enum unit_state
@@ -31,59 +32,54 @@ struct modifier_event_attack
     attack_record* AttackRecord;
 };
 
-/*
-struct modifier_event_calculate_attributes
-{
-    attributes* Attributes;
-};
-*/
-
-
 struct entity;
-
-struct modifier_event_damage
-{
-    f32 Damage;
-    damage_type Type;
-    entity* Attacker;
-    entity* Target;
-};
-
-#define MODIFIER_EVENT_LISTENER(name) void name(spell* Spell_, modifier* Modifier_, event* Event_)
+struct modifier;
+struct spell_info;
+#define MODIFIER_EVENT_LISTENER(name) void name(spell_info* SpellInfo, modifier* Modifier, entity* Owner, event* Event_)
 typedef MODIFIER_EVENT_LISTENER(modifier_event_listener);
 
-#define MODIFIER_EVENT(m, m_event) MODIFIER_EVENT_LISTENER(m##m_event)
+#define MODIFIER_EVENT(m, m_event) internal MODIFIER_EVENT_LISTENER(m##__##m_event)
+
+enum modifier_event_name
+{
+    ModifierEvent_OnCreated,
+    ModifierEvent_OnDestroy,
+    ModifierEvent_OnTakeDamage,
+    ModifierEvent_OnCastSpell,
+    ModifierEvent_OnAttackStart,
+    ModifierEvent_OnHit,
+    ModifierEvent_OnDeath,
+    
+    ModifierEvent_Count
+};
+struct modifier_event_callback
+{
+    modifier_event_name EventName;
+    modifier_event_listener* ListenerFunc;
+};
+struct callback_lookup
+{
+    modifier_event_callback* Start;
+    int Count;
+};
+inline callback_lookup InitCallbackLookup(modifier_event_callback* Start, int Count)
+{
+    callback_lookup Result;
+    Result.Start = Start;
+    Result.Count = Count;
+    return Result;
+}
 
 struct ll_modifier_event_listener
 {
+    entity_id Owner;
+    modifier_id ModifierID;
+    modifier_event_listener* Listener;
     ll_modifier_event_listener* Prev;
     ll_modifier_event_listener* Next;
-    spell* Spell;
-    modifier* Modifier;
-    modifier_event_listener* Listener;
 };
 
-// NOTE: this function may write to the event.
-// make sure that each modifier value change is order-independent (multiplicative)
-internal void
-TriggerModifierListeners(ll_modifier_event_listener* First, event* Event)
-{
-    ll_modifier_event_listener* ListenerNode = First;
-    while (ListenerNode)
-    {
-        ListenerNode->Listener(ListenerNode->Spell, ListenerNode->Modifier, Event);
-        ListenerNode = ListenerNode->Next;
-    }
-}
 
-#if 0
-internal modifier*
-AddModifier_(entity* Target)
-{
-    return 0;
-}
 
-#define AddModifier(Target, ModifierType) (ModifierType*)AddModifier_(Target)
-#endif
 
 #endif //MODIFIER_H

@@ -41,6 +41,7 @@
 #include <float.h>
 
 #define Real32Maximum FLT_MAX
+#define U32Maximum 0xFFFFFFFF
 
 #define internal static 
 #define local_persist static 

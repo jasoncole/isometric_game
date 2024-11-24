@@ -1,17 +1,16 @@
 
 internal projectile_record*
-CreateTrackingProjectile(game_state* GameState, entity_id Source, entity_id Target, f32 ProjectileSpeed, b32 IsAttack, bitmap* Texture, void* ProjectileInfo, projectile_think* Think = 0)
+CreateTrackingProjectile(game_state* GameState, entity* Source, entity* Target, f32 ProjectileSpeed, b32 IsAttack, bitmap* Texture, void* ProjectileInfo, projectile_think* Think = 0)
 {
-    entity* Sender = GetEntity(GameState, Source);
     // TODO: circular buffer
     projectile_record* Result = PushStruct(&GameState->ProjectileRecords, projectile_record);
     
-    Result->Position = Sender->Pos;
+    Result->Position = Source->Pos;
     Result->Speed = ProjectileSpeed;
     Result->Type = PROJECTILE_TYPE_TRACKING;
-    Result->Source = Source;
-    Result->Target = Target;
-    Result->Team = Sender->Team;
+    Result->Source = Source->ID;
+    Result->Target = Target->ID;
+    Result->Team = Source->Team;
     Result->IsAttack = IsAttack;
     Result->Texture = Texture;
     if (IsAttack)
@@ -33,17 +32,17 @@ CreateTrackingProjectile(game_state* GameState, entity_id Source, entity_id Targ
 }
 
 internal projectile_record*
-CreateLinearProjectile(game_state* GameState, entity_id Source, f32 ProjectileSpeed, bitmap* Texture, spell* SpellInstance, projectile_think* Think = 0)
+CreateLinearProjectile(game_state* GameState, entity* Source, fv2 Direction, f32 ProjectileSpeed, bitmap* Texture, spell* SpellInstance, projectile_think* Think = 0)
 {
-    entity* Sender = GetEntity(GameState, Source);
     // TODO: circular buffer
     projectile_record* Result = PushStruct(&GameState->ProjectileRecords, projectile_record);
     
-    Result->Position = Sender->Pos;
+    // TODO: offset?
+    Result->Position = Source->Pos;
     Result->Speed = ProjectileSpeed;
     Result->Type = PROJECTILE_TYPE_LINEAR;
-    Result->Source = Source;
-    Result->Team = Sender->Team;
+    Result->Source = Source->ID;
+    Result->Team = Source->Team;
     Result->Texture = Texture;
     Result->IsAttack = false;
     Result->Spell = SpellInstance;
@@ -87,9 +86,9 @@ RollAttackDamage(entity* Attacker)
 };
 
 internal void 
-ApplyDamage(f32 Damage, damage_type DamageType, entity* Attacker, entity* Target)
+ApplyDamage(game_state* GameState, f32 Damage, damage_type DamageType, entity* Attacker, entity* Target)
 {
-    modifier_event_damage DamageEvent;
+    damage_event DamageEvent;
     
     DamageEvent.Damage = Damage;
     DamageEvent.Type = DamageType;
@@ -110,7 +109,7 @@ ApplyDamage(f32 Damage, damage_type DamageType, entity* Attacker, entity* Target
     }
     
     // trigger on take damage events
-    TriggerModifierListeners(Target->OnTakeDamage, (event*)&DamageEvent);
+    TriggerModifierListeners(GameState, GetModifierListenerRoot(Target, ModifierEvent_OnTakeDamage), (event*)&DamageEvent);
     
     Target->Attributes.Health -= DamageEvent.Damage;
 }
@@ -123,9 +122,9 @@ PerformAttack(game_state* GameState, attack_record* AttackRecord)
     
     // do on hit stuff here
     entity* Attacker = GetEntity(GameState, AttackRecord->Attacker);
-    TriggerModifierListeners(Attacker->OnHit, (event*)&AttackEvent);
+    TriggerModifierListeners(GameState, GetModifierListenerRoot(Attacker, ModifierEvent_OnHit), (event*)&AttackEvent);
     
-    ApplyDamage(AttackRecord->Damage, DAMAGE_TYPE_PHYSICAL, Attacker, GetEntity(GameState, AttackRecord->Target));
+    ApplyDamage(GameState, AttackRecord->Damage, DAMAGE_TYPE_PHYSICAL, Attacker, GetEntity(GameState, AttackRecord->Target));
 }
 
 internal void BeginAttack(game_state*, entity*, entity*, f32);
@@ -146,9 +145,10 @@ internal f32
 ResolveAttackPoint(game_state* GameState, attack_record* Attack, f32 dt)
 {
     entity* Attacker = GetEntity(GameState, Attack->Attacker);
+    entity* Target = GetEntity(GameState, Attack->Target);
     if (Attacker->IsRanged)
     {
-        CreateTrackingProjectile(GameState, Attack->Attacker, Attack->Target, Attacker->AttackProjectileSpeed, true, 0, (void*)Attack);
+        CreateTrackingProjectile(GameState, Attacker, Target, Attacker->AttackProjectileSpeed, true, 0, (void*)Attack);
     }
     else
     {

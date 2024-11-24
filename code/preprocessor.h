@@ -73,6 +73,12 @@ enum token_type
     Token_EndOfStream
 };
 
+struct stringinplace
+{
+    char* Text;
+    size_t Length;
+};
+
 struct token
 {
     token_type Type;
@@ -150,6 +156,27 @@ struct ll_string
     char* Text;
     
     ll_string* Next;
+};
+
+struct modifier_event_name_info
+{
+    stringinplace ModifierName;
+    stringinplace EventName;
+    modifier_event_name_info* Next;
+};
+
+struct parse_info
+{
+    //FILE* HFile;
+    FILE* CFile;
+    
+    char** FileNames;
+    int FileNameCount;
+    ll_string* ModifierRoot;
+    ll_string* ModifierEnd;
+    modifier_event_name_info* ModifierEventNameInfoRoot;
+    modifier_event_name_info* ModifierEventNameInfoEnd;
+    
 };
 
 #endif //PREPROCESSOR_H

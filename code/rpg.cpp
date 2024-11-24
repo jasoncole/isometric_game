@@ -1,67 +1,63 @@
 #include "rpg.h"
 #include "render.cpp"
 #include "entity.cpp"
+#include "modifier.cpp"
 #include "think.cpp"
-#include "event.cpp"
 #include "attack.cpp"
+#include "generated.cpp"
 
-// TODO:
 /*
+TODO:
 
-write basic preprocessor
-add spellcasting <- this will require metaprogramming so hold off on that for now
-add modifier that reacts to ontakedamage
+modifiers
+spells
+dynamic memory allocator
+probabilistic movement
+cleanup
 
-asset system
+asset builder
 fonts
 debug tools
- 
------------------------
- METAPROGRAMMING
- -----------------------
-put the modifier function pointers in the spell info
--> will probably have to parse C files to find specially tagged functions
-should spell info and modifier info be grouped together? im not sure
 
- -----------------------
- BUGS
- -----------------------
+-----------------------
+BUGS
+-----------------------
 walking speed affected by framerate - hard to replicate bug
 drawquad is not drawing overdrawing correctly - we don't plan on using drawquad in the long run so just ignore this
 walking to a directly adjacent tile is not handled correctly
 
- -----------------------
- RENDER
- -----------------------
- render buffer sorting
- raylib
+-----------------------
+RENDER
+-----------------------
+render buffer sorting
+raylib
 
- -----------------------
- DEBUG
- -----------------------
- Inspect entities
+-----------------------
+DEBUG
+-----------------------
+Inspect entities
 
- -----------------------
- ENGINE
- -----------------------
- dynamic memory allocator
- read the spell info values from a text file - or - load the structs directly form an asset file
- chunk-based entity storage (to cut down on aoe search time)
- metaprogram autoinclude hero files
- make think work on subtick timing
+-----------------------
+ENGINE
+-----------------------
+dynamic memory allocator
+read the spell info values from a text file - or - load the structs directly form an asset file
+chunk-based entity storage (to cut down on aoe search time)
+metaprogram autoinclude hero files
+make think work on subtick timing
 
- -----------------------
- MAP EDITOR
- -----------------------
- place objects
- save changes to files
+-----------------------
+MAP EDITOR
+-----------------------
+place objects
+save changes to files
 
- -----------------------
- ASSETS
- -----------------------
- asset tagging
+-----------------------
+ASSETS
+-----------------------
+asset tagging
 packed files
- asset processing
+asset processing
 
 
 */
@@ -467,6 +463,24 @@ LoadAsset(game_assets* Assets, game_asset_id ID)
     }
 }
 
+#if 0
+#define STB_TRUETYPE_IMPLEMENTATION
+#include "stb_truetype.h"
+
+internal void
+MakeGlyphTest()
+{
+    debug_read_file_result TTFFile = Platform.ReadEntireFile("c:/Windows/Fonts/arial.ttf");
+    
+    stbtt_fontinfo Font;
+    stbtt_InitFont(&Font, (u8*)TTFFile.Contents, stbtt_GetFontOffsetForIndex((u8*)TTFFile.Contents,0));
+    
+    int Width, Height, XOffset, YOffset;
+    u8* MonoBitmap = stbtt_GetCodepointBitmap(&Font, 0,stbtt_ScaleForPixelHeight(&Font, 128.0f), 'N', &Width, &Height, &XOffset, &YOffset);
+    stbtt_FreeBitmap(MonoBitmap, 0);
+}
+#endif 
+
 extern "C" GAME_INITIALIZE_MEMORY(GameInitializeMemory)
 {
     PlatformAddEntry = Memory->PlatformAddEntry;
@@ -488,6 +502,8 @@ extern "C" GAME_INITIALIZE_MEMORY(GameInitializeMemory)
     GameState->MainThink.Thinkers = PushArray(&GameState->GameArena, think_entry, MAX_THINKERS);
     
     InitSpellInfo(&GameState->SpellInfo);
+    GameState->ModifierCallbacks = PushArray(&GameState->GameArena, callback_lookup, ModifierType_Count);
+    InitModifierCallbackLUT(GameState->ModifierCallbacks);
     
     for (u32 TaskIndex = 0;
          TaskIndex < ArrayCount(GameState->Tasks);

@@ -30,6 +30,7 @@ struct projectile_record
 };
 
 struct modifier;
+struct entity;
 
 #define ENTITY_THINK(name) f32 name(game_state* GameState, entity* Entity, f32 dt)
 typedef ENTITY_THINK(entity_think);

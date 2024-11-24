@@ -16,18 +16,19 @@
 #include "rpg_math.h"
 #include "random.h"
 #include "arena.cpp"
-#include "stb_truetype.h"
 #include "render.h"
-#include "spell.h"
 #include "attack.h"
+#include "modifier.h"
+#include "spell.h"
 #include "entity.h"
 #include "think.h"
-#include "modifier.h"
 #include "generated.h"
-#include "event.h"
 #include "rpg_platform.h"
 #include "pathfinding.cpp"
 #include "projectile.h"
+
+
+
 
 INCLUDE_DIRECTORY(heroes)
 
@@ -101,6 +102,8 @@ struct task_with_memory
     memory_index PopIndex;
 };
 
+
+
 struct game_state
 {
     arena GameArena;
@@ -132,6 +135,9 @@ struct game_state
     
     u32 EntityIndex;
     entity Entities[512];
+    
+    // Modifier Event callbacks (defined at startup and does not change)
+    callback_lookup* ModifierCallbacks;
     
 #define MAX_OBSTACLES 512
     sv2 Obstacles[MAX_OBSTACLES];

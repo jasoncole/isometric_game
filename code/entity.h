@@ -3,8 +3,6 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-typedef u32 entity_id;
-
 // TODO: order independent metaprogramming
 struct ll_modifier_event_listener;
 
@@ -43,6 +41,15 @@ struct think_context
 {
 };
 
+
+struct ArenaFreeList
+{
+    u32 Count;
+    u32 FreeList[DIV32(Count)];
+    void* Elements;
+};
+
+
 struct entity
 {
     entity_id ID;
@@ -61,12 +68,14 @@ struct entity
     
     arena PathArena;
     spell_table SpellTable;
-    arena ModifierListeners;
     
-    ll_modifier_event_listener* OnTakeDamage;
-    ll_modifier_event_listener* OnCastSpell;
-    ll_modifier_event_listener* OnAttackStart;
-    ll_modifier_event_listener* OnHit;
+    modifier_id ModifierIndex;
+    u32 ModifierHashTableSize;
+    arena ModifierArena;
+    
+    // first u32 designates size of 
+    arena ModifierEventListenerArena;
+    ll_modifier_event_listener* ModifierListenerRoots[ModifierEvent_Count];
     
     b32 AttackDisabled;
     struct think_entry* PreAttackThink;

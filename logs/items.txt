@@ -1,2 +1,35 @@
 
-force staff - pushes/pulls towards caster?
+removed items:
+revenant's brooch
+spirit vessel
+aether lens
+moon shard
+nullifier
+
+
+
+force staff - pulls target towards caster
+MKB - much cheaper but less likely to proc
+wraith band and friends - just gives stats, no upgrades
+boots of travel - 3 levels. First level allows tp to buildings. second level allows tp to creeps. third level allows tp to heroes. Each level costs a 1000 gold recipe.
+heart - activate to gain percentage based region until damaged by enemy hero
+bloodstone - charges give spell amp
+aghanim's scepter - on purchase, gain +3 skillpoints. cannot be sold
+
+Crafting items (upgrades):
+manta style -> flicker - use to weak dispel and randomly displace hero a short distance away. Much shorter cooldown.
+desolator -> giga deso - gains damage on kill
+blink -> arcane blink - cooldown reduced every time you cast a spell
+monkey king bar -> true MKB - can be activated to grant true strike and bonus magic damage for next 5 attacks
+shadow blade -> silver edge - decreased cooldown
+BKB -> BKB - can be combined with roshan drop to restore charges
+Refresher -> Deus Ex Machina - decreased CD but only works on items
+Ghost scepter -> Ethereal blade - easier for supports to acquire. Does not deal magic damage, just applies ethereal
+
+Crafting items (consumables)
+heals - combine specific consumables to make the heal restore health, mana, restore percentage, restore instantly, give barrier
+weak dispel
+permanent stat upgrade
+
+
+
