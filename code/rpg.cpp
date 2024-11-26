@@ -9,6 +9,9 @@
 /*
 TODO:
 
+Make modifiers entities?
+modifiers update and some of them are rendered
+
 modifiers
 spells
 dynamic memory allocator
